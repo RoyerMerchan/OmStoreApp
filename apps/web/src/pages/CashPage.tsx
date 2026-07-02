@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
   Wallet,
@@ -46,6 +46,28 @@ export default function CashPage() {
   const [movementDesc, setMovementDesc] = useState('')
   const [movementAmount, setMovementAmount] = useState(0)
   const [addingMovement, setAddingMovement] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const firstFocusableRef = useRef<HTMLInputElement>(null)
+
+  const closeModal = useCallback(() => {
+    setShowMovementModal(false)
+    setMovementDesc('')
+    setMovementAmount(0)
+  }, [])
+
+  useEffect(() => {
+    if (!showMovementModal) return
+    const prev = document.activeElement as HTMLElement | null
+    firstFocusableRef.current?.focus()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeModal()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      prev?.focus()
+    }
+  }, [showMovementModal, closeModal])
 
   const fetchSession = async () => {
     try {
@@ -104,12 +126,12 @@ export default function CashPage() {
         </div>
         <h2 className="text-xl font-semibold text-gray-700">No hay caja abierta</h2>
         <p className="text-gray-500">Abre una caja para comenzar a registrar movimientos</p>
-        <a
-          href="/caja/abrir"
+        <Link
+          to="/caja/abrir"
           className="px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
         >
           Abrir Caja
-        </a>
+        </Link>
       </div>
     )
   }
@@ -146,54 +168,54 @@ export default function CashPage() {
             <Minus size={16} />
             Egreso
           </button>
-          <a
-            href="/caja/cerrar"
+          <Link
+            to="/caja/cerrar"
             className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
           >
             Cerrar Caja
-          </a>
+          </Link>
         </div>
       </div>
 
       {/* Status card */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 dark:bg-gray-900 dark:border-gray-800">
           <div className="flex items-center gap-2 mb-1">
             <Wallet size={16} className="text-primary-600" />
-            <span className="text-xs text-gray-500 uppercase font-semibold">Estado</span>
+            <span className="text-xs text-gray-500 uppercase font-semibold dark:text-gray-400">Estado</span>
           </div>
           <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-sm font-medium">
             Abierta
           </span>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 dark:bg-gray-900 dark:border-gray-800">
           <div className="flex items-center gap-2 mb-1">
             <TrendingUp size={16} className="text-green-600" />
-            <span className="text-xs text-gray-500 uppercase font-semibold">Apertura</span>
+            <span className="text-xs text-gray-500 uppercase font-semibold dark:text-gray-400">Apertura</span>
           </div>
-          <p className="text-lg font-bold">
+          <p className="text-lg font-bold dark:text-white">
             ${Number(session.openingAmount).toLocaleString('es-CO')}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             {new Date(session.openedAt).toLocaleString('es-CO')}
           </p>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 dark:bg-gray-900 dark:border-gray-800">
           <div className="flex items-center gap-2 mb-1">
             <Receipt size={16} className="text-blue-600" />
-            <span className="text-xs text-gray-500 uppercase font-semibold">Ventas</span>
+            <span className="text-xs text-gray-500 uppercase font-semibold dark:text-gray-400">Ventas</span>
           </div>
-          <p className="text-lg font-bold">{session.sales?.length ?? 0}</p>
-          <p className="text-xs text-gray-500">
+          <p className="text-lg font-bold dark:text-white">{session.sales?.length ?? 0}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             ${Number(totalSalesCash).toLocaleString('es-CO')} en ventas
           </p>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 dark:bg-gray-900 dark:border-gray-800">
           <div className="flex items-center gap-2 mb-1">
-            <Wallet size={16} className="text-gray-600" />
-            <span className="text-xs text-gray-500 uppercase font-semibold">Esperado</span>
+            <Wallet size={16} className="text-gray-600 dark:text-gray-400" />
+            <span className="text-xs text-gray-500 uppercase font-semibold dark:text-gray-400">Esperado</span>
           </div>
-          <p className="text-lg font-bold">
+          <p className="text-lg font-bold dark:text-white">
             ${Number(expectedTotal).toLocaleString('es-CO')}
           </p>
         </div>
@@ -201,12 +223,12 @@ export default function CashPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Movements */}
-        <div className="bg-white rounded-lg border border-gray-200">
-          <div className="px-4 py-3 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900">Movimientos Manuales</h3>
+        <div className="bg-white rounded-lg border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+            <h3 className="font-semibold text-gray-900 dark:text-white">Movimientos Manuales</h3>
           </div>
           {session.movements && session.movements.length > 0 ? (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-100 dark:divide-gray-800">
               {session.movements.map((m) => (
                 <div key={m.id} className="px-4 py-3 flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -216,8 +238,8 @@ export default function CashPage() {
                       <ArrowDownRight size={16} className="text-red-600" />
                     )}
                     <div>
-                      <p className="text-sm font-medium">{m.description}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium dark:text-white">{m.description}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         {new Date(m.createdAt).toLocaleString('es-CO')}
                       </p>
                     </div>
@@ -233,51 +255,60 @@ export default function CashPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-400 text-sm">Sin movimientos</div>
+            <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm">Sin movimientos</div>
           )}
         </div>
 
         {/* Recent sales */}
-        <div className="bg-white rounded-lg border border-gray-200">
-          <div className="px-4 py-3 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900">Ventas en esta sesión</h3>
+        <div className="bg-white rounded-lg border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+            <h3 className="font-semibold text-gray-900 dark:text-white">Ventas en esta sesión</h3>
           </div>
           {session.sales && session.sales.length > 0 ? (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-100 dark:divide-gray-800">
               {session.sales.map((s, i) => (
                 <div key={s.id} className="px-4 py-3 flex items-center justify-between">
-                  <span className="text-sm text-gray-500">#{(i + 1).toString().padStart(3, '0')}</span>
-                  <span className="text-sm font-medium">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">#{(i + 1).toString().padStart(3, '0')}</span>
+                  <span className="text-sm font-medium dark:text-white">
                     ${Number(s.total).toLocaleString('es-CO')}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-400 text-sm">Sin ventas en esta sesión</div>
+            <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm">Sin ventas en esta sesión</div>
           )}
         </div>
       </div>
 
       {/* Add movement modal */}
       {showMovementModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="movement-modal-title"
+          ref={modalRef}
+        >
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 id="movement-modal-title" className="text-lg font-semibold text-gray-900">
                 {movementType === 'INCOME' ? 'Agregar Ingreso' : 'Agregar Egreso'}
               </h2>
               <button
-                onClick={() => setShowMovementModal(false)}
+                onClick={closeModal}
                 className="p-1 rounded hover:bg-gray-100"
+                aria-label="Cerrar"
               >
                 <X size={18} />
               </button>
             </div>
             <form onSubmit={handleAddMovement} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <label htmlFor="movement-desc" className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
                 <input
+                  id="movement-desc"
+                  ref={firstFocusableRef}
                   type="text"
                   value={movementDesc}
                   onChange={(e) => setMovementDesc(e.target.value)}
@@ -287,10 +318,11 @@ export default function CashPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Monto</label>
+                <label htmlFor="movement-amount" className="block text-sm font-medium text-gray-700 mb-1">Monto</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" aria-hidden="true">$</span>
                   <input
+                    id="movement-amount"
                     type="number"
                     min={1}
                     value={movementAmount}
@@ -304,7 +336,7 @@ export default function CashPage() {
               <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowMovementModal(false)}
+                  onClick={closeModal}
                   className="flex-1 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
                 >
                   Cancelar

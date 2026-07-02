@@ -295,8 +295,9 @@ export default function LayawayDetailPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Registrar Abono</h2>
             <form onSubmit={handlePayment} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Monto</label>
+                <label htmlFor="payment-amount" className="block text-sm font-medium text-gray-700 mb-1">Monto</label>
                 <input
+                  id="payment-amount"
                   type="number"
                   value={paymentAmount}
                   onChange={(e) => setPaymentAmount(parseFloat(e.target.value) || 0)}
@@ -307,8 +308,9 @@ export default function LayawayDetailPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Método de Pago</label>
+                <label htmlFor="payment-method" className="block text-sm font-medium text-gray-700 mb-1">Método de Pago</label>
                 <select
+                  id="payment-method"
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
@@ -320,8 +322,9 @@ export default function LayawayDetailPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Referencia</label>
+                <label htmlFor="payment-ref" className="block text-sm font-medium text-gray-700 mb-1">Referencia</label>
                 <input
+                  id="payment-ref"
                   type="text"
                   value={paymentReference}
                   onChange={(e) => setPaymentReference(e.target.value)}
@@ -357,8 +360,9 @@ export default function LayawayDetailPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Cancelar Apartado</h2>
             <form onSubmit={handleCancel} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Motivo de Cancelación</label>
+                <label htmlFor="cancel-reason" className="block text-sm font-medium text-gray-700 mb-1">Motivo de Cancelación</label>
                 <textarea
+                  id="cancel-reason-layaway"
                   value={cancelReason}
                   onChange={(e) => setCancelReason(e.target.value)}
                   rows={3}

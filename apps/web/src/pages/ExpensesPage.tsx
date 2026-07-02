@@ -25,7 +25,7 @@ export default function ExpensesPage() {
 
   const [showForm, setShowForm] = useState(false)
   const [concept, setConcept] = useState('')
-  const [category, setCategory] = useState('')
+  const [categoryId, setCategoryId] = useState('')
   const [amount, setAmount] = useState(0)
   const [notes, setNotes] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -59,7 +59,7 @@ export default function ExpensesPage() {
 
   function openForm() {
     setConcept('')
-    setCategory('')
+    setCategoryId('')
     setAmount(0)
     setNotes('')
     setShowForm(true)
@@ -68,12 +68,12 @@ export default function ExpensesPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!concept) { toast.error('Ingresa el concepto'); return }
-    if (!category) { toast.error('Selecciona una categoría'); return }
+    if (!categoryId) { toast.error('Selecciona una categoría'); return }
     if (!amount || amount <= 0) { toast.error('Ingresa un monto válido'); return }
 
     setSubmitting(true)
     try {
-      const res = await api.post('/expenses', { concept, category, amount, notes })
+      const res = await api.post('/expenses', { concept, categoryId, amount, notes })
       if (res.data.success) {
         toast.success('Gasto registrado')
         setShowForm(false)
@@ -154,51 +154,55 @@ export default function ExpensesPage() {
       )}
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="max-w-lg bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Nuevo Gasto</h2>
+        <form onSubmit={handleSubmit} className="max-w-lg bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4 dark:bg-gray-900 dark:border-gray-800">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Nuevo Gasto</h2>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Concepto</label>
+            <label htmlFor="expense-concept" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Concepto</label>
             <input
+              id="expense-concept"
               type="text"
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+            <label htmlFor="expense-category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoría</label>
             <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+              id="expense-category"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               required
             >
               <option value="">Seleccionar categoría</option>
               {categories.map((c) => (
-                <option key={c.id} value={c.name}>{c.name}</option>
+                <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Monto</label>
+            <label htmlFor="expense-amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Monto</label>
             <input
+              id="expense-amount"
               type="number"
               value={amount}
               onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               min={0.01}
               step={0.01}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
+            <label htmlFor="expense-notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notas</label>
             <textarea
+              id="expense-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               placeholder="Opcional"
             />
           </div>

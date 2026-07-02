@@ -99,24 +99,26 @@ export default function SalesPage() {
 
       {/* Filters */}
       {showFilters && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 dark:bg-gray-900 dark:border-gray-800">
           <form onSubmit={handleSearch} className="flex flex-wrap items-end gap-3">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Buscar</label>
+              <label htmlFor="sale-search" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Buscar</label>
               <input
+                id="sale-search"
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Ticket o cliente..."
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Estado</label>
+              <label htmlFor="sale-status" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Estado</label>
               <select
+                id="sale-status"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               >
                 <option value="">Todos</option>
                 <option value="COMPLETED">Completada</option>
@@ -125,21 +127,23 @@ export default function SalesPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Desde</label>
+              <label htmlFor="sale-from" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Desde</label>
               <input
+                id="sale-from"
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Hasta</label>
+              <label htmlFor="sale-to" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Hasta</label>
               <input
+                id="sale-to"
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
             <button
@@ -161,10 +165,10 @@ export default function SalesPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden dark:bg-gray-900 dark:border-gray-800">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+            <thead className="bg-gray-50 text-xs text-gray-500 uppercase dark:bg-gray-800 dark:text-gray-400">
               <tr>
                 <th className="text-left px-4 py-3">Ticket</th>
                 <th className="text-left px-4 py-3">Fecha</th>
@@ -174,7 +178,7 @@ export default function SalesPage() {
                 <th className="text-center px-4 py-3">Estado</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="text-center py-12">
@@ -183,7 +187,7 @@ export default function SalesPage() {
                 </tr>
               ) : sales.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-12 text-gray-500">
+                  <td colSpan={6} className="text-center py-12 text-gray-500 dark:text-gray-400">
                     No hay ventas registradas
                   </td>
                 </tr>
@@ -192,12 +196,15 @@ export default function SalesPage() {
                   <tr
                     key={sale.id}
                     onClick={() => navigate(`/ventas/${sale.id}`)}
-                    className="hover:bg-gray-50 cursor-pointer transition-colors"
+                    onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/ventas/${sale.id}`) }}
+                    tabIndex={0}
+                    role="button"
+                    className="hover:bg-gray-50 cursor-pointer transition-colors dark:hover:bg-gray-800/50"
                   >
-                    <td className="px-4 py-3 text-sm font-medium text-primary-600">
+                    <td className="px-4 py-3 text-sm font-medium text-primary-600 dark:text-primary-400">
                       {sale.ticketNumber}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
+                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                       {new Date(sale.createdAt).toLocaleDateString('es-CO', {
                         year: 'numeric',
                         month: 'short',
@@ -206,17 +213,17 @@ export default function SalesPage() {
                         minute: '2-digit',
                       })}
                     </td>
-                    <td className="px-4 py-3 text-sm">
-                      {sale.customer?.name || <span className="text-gray-400">—</span>}
+                    <td className="px-4 py-3 text-sm dark:text-gray-300">
+                      {sale.customer?.name || <span className="text-gray-400 dark:text-gray-500">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-sm">{sale.user?.name || '—'}</td>
-                    <td className="px-4 py-3 text-sm text-right font-medium">
+                    <td className="px-4 py-3 text-sm dark:text-gray-300">{sale.user?.name || '—'}</td>
+                    <td className="px-4 py-3 text-sm text-right font-medium dark:text-white">
                       ${Number(sale.total).toLocaleString('es-CO')}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span
                         className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                          statusStyles[sale.status] || 'bg-gray-100 text-gray-600'
+                          statusStyles[sale.status] || 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
                         }`}
                       >
                         {statusLabels[sale.status] || sale.status}
@@ -231,22 +238,22 @@ export default function SalesPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50">
-            <span className="text-sm text-gray-600">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               Página {page} de {totalPages} ({total} registros)
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-300"
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-300"
               >
                 <ChevronRight size={16} />
               </button>

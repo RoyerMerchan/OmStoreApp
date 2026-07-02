@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
   Search,
@@ -16,6 +16,7 @@ import {
   Percent,
   User,
   Loader2,
+  Lock,
 } from 'lucide-react'
 import api from '../lib/axios'
 
@@ -290,15 +291,17 @@ export default function PosPage() {
   if (!cashOpen) {
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4">
-        <div className="text-4xl">🔒</div>
+        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+          <Lock size={32} className="text-gray-400" />
+        </div>
         <h2 className="text-xl font-semibold text-gray-700">No hay caja abierta</h2>
         <p className="text-gray-500">Debes abrir caja antes de vender</p>
-        <a
-          href="/caja/abrir"
+        <Link
+          to="/caja/abrir"
           className="px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
         >
           Abrir Caja
-        </a>
+        </Link>
       </div>
     )
   }
@@ -377,7 +380,7 @@ export default function PosPage() {
       <div className="flex-1 flex flex-col bg-white rounded-lg border border-gray-200">
         <div className="p-4 border-b border-gray-200 flex items-center gap-2">
           <ShoppingCart size={18} className="text-primary-600" />
-          <h2 className="font-semibold text-gray-900">Carrito ({cart.length})</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white">Carrito ({cart.length})</h2>
         </div>
 
         {cart.length === 0 ? (
@@ -392,7 +395,7 @@ export default function PosPage() {
           <>
             <div className="flex-1 overflow-y-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+                <thead className="bg-gray-50 text-xs text-gray-500 uppercase dark:bg-gray-800 dark:text-gray-400">
                   <tr>
                     <th className="text-left px-3 py-2">Producto</th>
                     <th className="text-left px-3 py-2">Talla</th>
@@ -404,31 +407,31 @@ export default function PosPage() {
                     <th className="px-3 py-2"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {cart.map((item) => {
                     const lineSubtotal = item.variant.price * item.quantity
                     const lineDiscount = (lineSubtotal * item.discount) / 100
                     const lineTotal = lineSubtotal - lineDiscount
                     return (
-                      <tr key={item.variant.id} className="hover:bg-gray-50">
-                        <td className="px-3 py-2 text-sm font-medium">{item.variant.product.name}</td>
-                        <td className="px-3 py-2 text-sm">{item.variant.size}</td>
-                        <td className="px-3 py-2 text-sm">{item.variant.color}</td>
-                        <td className="px-3 py-2 text-sm text-right">
+                      <tr key={item.variant.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        <td className="px-3 py-2 text-sm font-medium dark:text-white">{item.variant.product.name}</td>
+                        <td className="px-3 py-2 text-sm dark:text-gray-300">{item.variant.size}</td>
+                        <td className="px-3 py-2 text-sm dark:text-gray-300">{item.variant.color}</td>
+                        <td className="px-3 py-2 text-sm text-right dark:text-gray-300">
                           ${Number(item.variant.price).toLocaleString('es-CO')}
                         </td>
                         <td className="px-3 py-2">
                           <div className="flex items-center justify-center gap-1">
                             <button
                               onClick={() => updateQuantity(item.variant.id, -1)}
-                              className="p-1 rounded hover:bg-gray-200 text-gray-600"
+                              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-gray-200 text-gray-600 dark:hover:bg-gray-700 dark:text-gray-300"
                             >
                               <Minus size={14} />
                             </button>
-                            <span className="w-6 text-center text-sm font-medium">{item.quantity}</span>
+                            <span className="w-6 text-center text-sm font-medium dark:text-white">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.variant.id, 1)}
-                              className="p-1 rounded hover:bg-gray-200 text-gray-600"
+                              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-gray-200 text-gray-600 dark:hover:bg-gray-700 dark:text-gray-300"
                             >
                               <Plus size={14} />
                             </button>
@@ -441,16 +444,16 @@ export default function PosPage() {
                             max={100}
                             value={item.discount}
                             onChange={(e) => updateItemDiscount(item.variant.id, Number(e.target.value))}
-                            className="w-16 text-right text-sm border border-gray-300 rounded px-1 py-0.5"
+                            className="w-16 text-right text-sm border border-gray-300 rounded px-1 py-0.5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                           />
                         </td>
-                        <td className="px-3 py-2 text-sm text-right font-medium">
+                        <td className="px-3 py-2 text-sm text-right font-medium dark:text-white">
                           ${Number(lineTotal).toLocaleString('es-CO')}
                         </td>
                         <td className="px-3 py-2 text-right">
                           <button
                             onClick={() => removeFromCart(item.variant.id)}
-                            className="p-1 rounded hover:bg-red-100 text-red-500"
+                            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-red-100 text-red-500 dark:hover:bg-red-900/30"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -462,11 +465,11 @@ export default function PosPage() {
               </table>
             </div>
 
-            <div className="border-t border-gray-200 p-4 space-y-2 bg-gray-50">
+            <div className="border-t border-gray-200 p-4 space-y-2 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Percent size={16} className="text-gray-500" />
-                  <span className="text-sm text-gray-600">Descuento global</span>
+                  <Percent size={16} className="text-gray-500 dark:text-gray-400" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Descuento global</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <input
@@ -475,28 +478,28 @@ export default function PosPage() {
                     max={100}
                     value={globalDiscount}
                     onChange={(e) => setGlobalDiscount(Number(e.target.value))}
-                    className="w-16 text-right text-sm border border-gray-300 rounded px-1 py-0.5"
+                    className="w-16 text-right text-sm border border-gray-300 rounded px-1 py-0.5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                   />
-                  <span className="text-sm text-gray-500">%</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">%</span>
                 </div>
               </div>
-              <div className="flex items-center justify-between text-sm text-gray-600">
+              <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
                 <span>Subtotal</span>
-                <span>${Number(subtotal).toLocaleString('es-CO')}</span>
+                <span className="dark:text-gray-200">${Number(subtotal).toLocaleString('es-CO')}</span>
               </div>
               {itemDiscountTotal > 0 && (
-                <div className="flex items-center justify-between text-sm text-green-600">
+                <div className="flex items-center justify-between text-sm text-green-600 dark:text-green-400">
                   <span>Desc. items</span>
                   <span>-${Number(itemDiscountTotal).toLocaleString('es-CO')}</span>
                 </div>
               )}
               {globalDiscountAmount > 0 && (
-                <div className="flex items-center justify-between text-sm text-green-600">
+                <div className="flex items-center justify-between text-sm text-green-600 dark:text-green-400">
                   <span>Desc. global ({globalDiscount}%)</span>
                   <span>-${Number(globalDiscountAmount).toLocaleString('es-CO')}</span>
                 </div>
               )}
-              <div className="flex items-center justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200">
+              <div className="flex items-center justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200 dark:text-white dark:border-gray-700">
                 <span>Total</span>
                 <span>${Number(total).toLocaleString('es-CO')}</span>
               </div>
@@ -508,8 +511,8 @@ export default function PosPage() {
       {/* Right: Payment & Customer */}
       <div className="lg:w-96 flex flex-col gap-4">
         {/* Customer selector */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 dark:bg-gray-900 dark:border-gray-800">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2 dark:text-gray-300">
             <User size={16} />
             Cliente (opcional)
           </h3>
@@ -522,10 +525,10 @@ export default function PosPage() {
                 if (!e.target.value) setSelectedCustomer(null)
               }}
               placeholder="Buscar cliente..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             />
             {showCustomerDropdown && customers.length > 0 && (
-              <div className="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto">
+              <div className="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
                 {customers.map((c) => (
                   <button
                     key={c.id}
@@ -534,17 +537,17 @@ export default function PosPage() {
                       setCustomerQuery(c.name)
                       setShowCustomerDropdown(false)
                     }}
-                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-200"
                   >
                     <div className="font-medium">{c.name}</div>
-                    {c.email && <div className="text-xs text-gray-500">{c.email}</div>}
+                    {c.email && <div className="text-xs text-gray-500 dark:text-gray-400">{c.email}</div>}
                   </button>
                 ))}
               </div>
             )}
           </div>
           {selectedCustomer && (
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
               {selectedCustomer.email && <span>{selectedCustomer.email} · </span>}
               {selectedCustomer.phone && <span>{selectedCustomer.phone}</span>}
             </div>
@@ -552,8 +555,8 @@ export default function PosPage() {
         </div>
 
         {/* Payment method */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">Método de pago</h3>
+        <div className="bg-white rounded-lg border border-gray-200 p-4 dark:bg-gray-900 dark:border-gray-800">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-gray-300">Método de pago</h3>
           <div className="grid grid-cols-2 gap-2">
             {paymentMethods.map((pm) => {
               const Icon = pm.icon
@@ -563,8 +566,8 @@ export default function PosPage() {
                   onClick={() => setPaymentMethod(pm.value)}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
                     paymentMethod === pm.value
-                      ? 'border-primary-500 bg-primary-50 text-primary-700'
-                      : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                      ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
+                      : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'
                   }`}
                 >
                   <Icon size={16} />
@@ -581,7 +584,7 @@ export default function PosPage() {
                   <select
                     value={p.method}
                     onChange={(e) => updatePaymentMethod(i, e.target.value as PaymentMethodType)}
-                    className="w-full mb-1 px-3 py-1.5 border border-gray-300 rounded text-sm"
+                    className="w-full mb-1 px-3 py-1.5 border border-gray-300 rounded text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                   >
                     {paymentMethods
                       .filter((pm) => pm.value !== 'MIXED')
@@ -599,7 +602,7 @@ export default function PosPage() {
                     min={0}
                     value={p.amount}
                     onChange={(e) => updatePayment(i, Number(e.target.value))}
-                    className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                    className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                     placeholder="0"
                   />
                 </div>
@@ -608,16 +611,16 @@ export default function PosPage() {
           </div>
 
           <div className="mt-4 space-y-1 text-sm">
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-gray-600 dark:text-gray-400">
               <span>Total</span>
-              <span className="font-medium">${Number(total).toLocaleString('es-CO')}</span>
+              <span className="font-medium dark:text-gray-200">${Number(total).toLocaleString('es-CO')}</span>
             </div>
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-gray-600 dark:text-gray-400">
               <span>Recibido</span>
-              <span className="font-medium">${Number(totalPayments).toLocaleString('es-CO')}</span>
+              <span className="font-medium dark:text-gray-200">${Number(totalPayments).toLocaleString('es-CO')}</span>
             </div>
             {change >= 0 && (
-              <div className="flex justify-between text-green-600 font-medium">
+              <div className="flex justify-between text-green-600 font-medium dark:text-green-400">
                 <span>Cambio</span>
                 <span>${Number(change).toLocaleString('es-CO')}</span>
               </div>

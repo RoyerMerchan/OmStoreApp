@@ -145,14 +145,15 @@ export default function CloseCashPage() {
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="close-amount" className="block text-sm font-medium text-gray-700 mb-1">
               Monto Contado
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" aria-hidden="true">
                 $
               </span>
               <input
+                id="close-amount"
                 type="number"
                 min={1}
                 step={100}
@@ -194,10 +195,11 @@ export default function CloseCashPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="close-notes" className="block text-sm font-medium text-gray-700 mb-1">
               Notas <span className="text-gray-400">(opcional)</span>
             </label>
             <textarea
+              id="close-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none resize-none"

@@ -178,8 +178,9 @@ export default function ProductVariantsPage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Talla *</label>
+              <label htmlFor="variant-size" className="block text-xs font-medium text-gray-600 mb-1">Talla *</label>
               <input
+                id="variant-size"
                 type="text"
                 value={form.size}
                 onChange={(e) => setForm({ ...form, size: e.target.value })}
@@ -189,8 +190,9 @@ export default function ProductVariantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Color *</label>
+              <label htmlFor="variant-color" className="block text-xs font-medium text-gray-600 mb-1">Color *</label>
               <input
+                id="variant-color"
                 type="text"
                 value={form.color}
                 onChange={(e) => setForm({ ...form, color: e.target.value })}
@@ -200,8 +202,9 @@ export default function ProductVariantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">SKU *</label>
+              <label htmlFor="variant-sku" className="block text-xs font-medium text-gray-600 mb-1">SKU *</label>
               <input
+                id="variant-sku"
                 type="text"
                 value={form.sku}
                 onChange={(e) => setForm({ ...form, sku: e.target.value })}
@@ -211,8 +214,9 @@ export default function ProductVariantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Código barras</label>
+              <label htmlFor="variant-barcode" className="block text-xs font-medium text-gray-600 mb-1">Código barras</label>
               <input
+                id="variant-barcode"
                 type="text"
                 value={form.barcode}
                 onChange={(e) => setForm({ ...form, barcode: e.target.value })}
@@ -221,8 +225,9 @@ export default function ProductVariantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Precio *</label>
+              <label htmlFor="variant-price" className="block text-xs font-medium text-gray-600 mb-1">Precio *</label>
               <input
+                id="variant-price"
                 type="number"
                 step="0.01"
                 min="0"
@@ -233,8 +238,9 @@ export default function ProductVariantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Costo *</label>
+              <label htmlFor="variant-cost" className="block text-xs font-medium text-gray-600 mb-1">Costo *</label>
               <input
+                id="variant-cost"
                 type="number"
                 step="0.01"
                 min="0"
@@ -245,8 +251,9 @@ export default function ProductVariantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Stock *</label>
+              <label htmlFor="variant-stock" className="block text-xs font-medium text-gray-600 mb-1">Stock *</label>
               <input
+                id="variant-stock"
                 type="number"
                 min="0"
                 value={form.stock}
@@ -256,8 +263,9 @@ export default function ProductVariantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Stock mínimo</label>
+              <label htmlFor="variant-minstock" className="block text-xs font-medium text-gray-600 mb-1">Stock mínimo</label>
               <input
+                id="variant-minstock"
                 type="number"
                 min="0"
                 value={form.minStock}

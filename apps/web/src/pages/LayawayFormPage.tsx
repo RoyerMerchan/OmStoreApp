@@ -326,8 +326,9 @@ export default function LayawayFormPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Detalles del Apartado</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Monto Inicial</label>
+              <label htmlFor="layaway-initial" className="block text-sm font-medium text-gray-700 mb-1">Monto Inicial</label>
               <input
+                id="layaway-initial"
                 type="number"
                 value={initialPayment}
                 onChange={(e) => setInitialPayment(parseFloat(e.target.value) || 0)}
@@ -341,8 +342,9 @@ export default function LayawayFormPage() {
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fecha Límite</label>
+              <label htmlFor="layaway-due" className="block text-sm font-medium text-gray-700 mb-1">Fecha Límite</label>
               <input
+                id="layaway-due"
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
@@ -352,8 +354,9 @@ export default function LayawayFormPage() {
             </div>
           </div>
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
+            <label htmlFor="layaway-notes" className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
             <textarea
+              id="layaway-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}

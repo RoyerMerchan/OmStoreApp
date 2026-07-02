@@ -60,7 +60,10 @@ export default function CatalogPage() {
       if (brand) params.brand = brand
       if (gender) params.gender = gender
       const res = await api.get('/catalog', { params })
-      if (res.data.success) setProducts(res.data.data)
+      if (res.data.success) {
+        const sizeGroup = res.data.sizes?.find((s: any) => s.size === selectedSize)
+        setProducts(sizeGroup?.items || [])
+      }
     } catch { /* ignore */ }
   }
 
@@ -159,10 +162,11 @@ export default function CatalogPage() {
               className="px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
             >
               <option value="">Todos los géneros</option>
-              <option value="MALE">Hombre</option>
-              <option value="FEMALE">Mujer</option>
+              <option value="MEN">Hombre</option>
+              <option value="WOMEN">Mujer</option>
+              <option value="BOY">Niño</option>
+              <option value="GIRL">Niña</option>
               <option value="UNISEX">Unisex</option>
-              <option value="KIDS">Niños</option>
             </select>
             <button
               onClick={handleExport}

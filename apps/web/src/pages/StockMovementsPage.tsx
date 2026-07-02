@@ -101,8 +101,9 @@ export default function StockMovementsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Buscar</label>
+            <label htmlFor="mov-search" className="block text-xs font-medium text-gray-600 mb-1">Buscar</label>
             <input
+              id="mov-search"
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -111,8 +112,9 @@ export default function StockMovementsPage() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Tipo movimiento</label>
+            <label htmlFor="mov-type" className="block text-xs font-medium text-gray-600 mb-1">Tipo movimiento</label>
             <select
+              id="mov-type"
               value={type}
               onChange={(e) => setType(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
@@ -125,8 +127,9 @@ export default function StockMovementsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Desde</label>
+            <label htmlFor="mov-from" className="block text-xs font-medium text-gray-600 mb-1">Desde</label>
             <input
+              id="mov-from"
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
@@ -134,8 +137,9 @@ export default function StockMovementsPage() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Hasta</label>
+            <label htmlFor="mov-to" className="block text-xs font-medium text-gray-600 mb-1">Hasta</label>
             <input
+              id="mov-to"
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}

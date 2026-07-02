@@ -1,31 +1,41 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { useAuthStore } from './store/authStore'
 import ProtectedLayout from './layouts/ProtectedLayout'
 import PublicLayout from './layouts/PublicLayout'
-import LoginPage from './pages/LoginPage'
-import DashboardPage from './pages/DashboardPage'
-import ProductsPage from './pages/ProductsPage'
-import ProductFormPage from './pages/ProductFormPage'
-import ProductVariantsPage from './pages/ProductVariantsPage'
-import InventoryPage from './pages/InventoryPage'
-import StockMovementsPage from './pages/StockMovementsPage'
-import PosPage from './pages/PosPage'
-import SalesPage from './pages/SalesPage'
-import SaleDetailPage from './pages/SaleDetailPage'
-import CashPage from './pages/CashPage'
-import OpenCashPage from './pages/OpenCashPage'
-import CloseCashPage from './pages/CloseCashPage'
-import LayawaysPage from './pages/LayawaysPage'
-import LayawayFormPage from './pages/LayawayFormPage'
-import LayawayDetailPage from './pages/LayawayDetailPage'
-import CustomersPage from './pages/CustomersPage'
-import SuppliersPage from './pages/SuppliersPage'
-import PurchasesPage from './pages/PurchasesPage'
-import ExpensesPage from './pages/ExpensesPage'
-import ReportsPage from './pages/ReportsPage'
-import UsersPage from './pages/UsersPage'
-import CatalogPage from './pages/CatalogPage'
+
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const ProductsPage = lazy(() => import('./pages/ProductsPage'))
+const ProductFormPage = lazy(() => import('./pages/ProductFormPage'))
+const ProductVariantsPage = lazy(() => import('./pages/ProductVariantsPage'))
+const InventoryPage = lazy(() => import('./pages/InventoryPage'))
+const StockMovementsPage = lazy(() => import('./pages/StockMovementsPage'))
+const PosPage = lazy(() => import('./pages/PosPage'))
+const SalesPage = lazy(() => import('./pages/SalesPage'))
+const SaleDetailPage = lazy(() => import('./pages/SaleDetailPage'))
+const CashPage = lazy(() => import('./pages/CashPage'))
+const OpenCashPage = lazy(() => import('./pages/OpenCashPage'))
+const CloseCashPage = lazy(() => import('./pages/CloseCashPage'))
+const LayawaysPage = lazy(() => import('./pages/LayawaysPage'))
+const LayawayFormPage = lazy(() => import('./pages/LayawayFormPage'))
+const LayawayDetailPage = lazy(() => import('./pages/LayawayDetailPage'))
+const CustomersPage = lazy(() => import('./pages/CustomersPage'))
+const BrandsPage = lazy(() => import('./pages/BrandsPage'))
+const SuppliersPage = lazy(() => import('./pages/SuppliersPage'))
+const PurchasesPage = lazy(() => import('./pages/PurchasesPage'))
+const ExpensesPage = lazy(() => import('./pages/ExpensesPage'))
+const ReportsPage = lazy(() => import('./pages/ReportsPage'))
+const UsersPage = lazy(() => import('./pages/UsersPage'))
+const CatalogPage = lazy(() => import('./pages/CatalogPage'))
+
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center h-64">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
+    </div>
+  )
+}
 
 export default function App() {
   const { checkAuth, loading, user } = useAuthStore()
@@ -46,36 +56,37 @@ export default function App() {
     <Routes>
       {/* Public routes */}
       <Route element={<PublicLayout />}>
-        <Route path="/catalogo" element={<CatalogPage />} />
+        <Route path="/catalogo" element={<Suspense fallback={<PageLoader />}><CatalogPage /></Suspense>} />
       </Route>
 
       {/* Login */}
-      <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
+      <Route path="/login" element={user ? <Navigate to="/" /> : <Suspense fallback={<PageLoader />}><LoginPage /></Suspense>} />
 
       {/* Protected routes */}
       <Route element={<ProtectedLayout />}>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/productos" element={<ProductsPage />} />
-        <Route path="/productos/nuevo" element={<ProductFormPage />} />
-        <Route path="/productos/:id/editar" element={<ProductFormPage />} />
-        <Route path="/productos/:id/variantes" element={<ProductVariantsPage />} />
-        <Route path="/inventario" element={<InventoryPage />} />
-        <Route path="/inventario/movimientos" element={<StockMovementsPage />} />
-        <Route path="/pos" element={<PosPage />} />
-        <Route path="/ventas" element={<SalesPage />} />
-        <Route path="/ventas/:id" element={<SaleDetailPage />} />
-        <Route path="/caja" element={<CashPage />} />
-        <Route path="/caja/abrir" element={<OpenCashPage />} />
-        <Route path="/caja/cerrar" element={<CloseCashPage />} />
-        <Route path="/apartados" element={<LayawaysPage />} />
-        <Route path="/apartados/nuevo" element={<LayawayFormPage />} />
-        <Route path="/apartados/:id" element={<LayawayDetailPage />} />
-        <Route path="/clientes" element={<CustomersPage />} />
-        <Route path="/proveedores" element={<SuppliersPage />} />
-        <Route path="/compras" element={<PurchasesPage />} />
-        <Route path="/gastos" element={<ExpensesPage />} />
-        <Route path="/reportes" element={<ReportsPage />} />
-        <Route path="/usuarios" element={<UsersPage />} />
+        <Route path="/" element={<Suspense fallback={<PageLoader />}><DashboardPage /></Suspense>} />
+        <Route path="/productos" element={<Suspense fallback={<PageLoader />}><ProductsPage /></Suspense>} />
+        <Route path="/productos/nuevo" element={<Suspense fallback={<PageLoader />}><ProductFormPage /></Suspense>} />
+        <Route path="/productos/:id/editar" element={<Suspense fallback={<PageLoader />}><ProductFormPage /></Suspense>} />
+        <Route path="/productos/:id/variantes" element={<Suspense fallback={<PageLoader />}><ProductVariantsPage /></Suspense>} />
+        <Route path="/inventario" element={<Suspense fallback={<PageLoader />}><InventoryPage /></Suspense>} />
+        <Route path="/inventario/movimientos" element={<Suspense fallback={<PageLoader />}><StockMovementsPage /></Suspense>} />
+        <Route path="/pos" element={<Suspense fallback={<PageLoader />}><PosPage /></Suspense>} />
+        <Route path="/ventas" element={<Suspense fallback={<PageLoader />}><SalesPage /></Suspense>} />
+        <Route path="/ventas/:id" element={<Suspense fallback={<PageLoader />}><SaleDetailPage /></Suspense>} />
+        <Route path="/caja" element={<Suspense fallback={<PageLoader />}><CashPage /></Suspense>} />
+        <Route path="/caja/abrir" element={<Suspense fallback={<PageLoader />}><OpenCashPage /></Suspense>} />
+        <Route path="/caja/cerrar" element={<Suspense fallback={<PageLoader />}><CloseCashPage /></Suspense>} />
+        <Route path="/apartados" element={<Suspense fallback={<PageLoader />}><LayawaysPage /></Suspense>} />
+        <Route path="/apartados/nuevo" element={<Suspense fallback={<PageLoader />}><LayawayFormPage /></Suspense>} />
+        <Route path="/apartados/:id" element={<Suspense fallback={<PageLoader />}><LayawayDetailPage /></Suspense>} />
+        <Route path="/clientes" element={<Suspense fallback={<PageLoader />}><CustomersPage /></Suspense>} />
+        <Route path="/proveedores" element={<Suspense fallback={<PageLoader />}><SuppliersPage /></Suspense>} />
+        <Route path="/marcas" element={<Suspense fallback={<PageLoader />}><BrandsPage /></Suspense>} />
+        <Route path="/compras" element={<Suspense fallback={<PageLoader />}><PurchasesPage /></Suspense>} />
+        <Route path="/gastos" element={<Suspense fallback={<PageLoader />}><ExpensesPage /></Suspense>} />
+        <Route path="/reportes" element={<Suspense fallback={<PageLoader />}><ReportsPage /></Suspense>} />
+        <Route path="/usuarios" element={<Suspense fallback={<PageLoader />}><UsersPage /></Suspense>} />
       </Route>
     </Routes>
   )

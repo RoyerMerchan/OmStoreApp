@@ -146,8 +146,9 @@ export default function ReportsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <form onSubmit={handleGenerate} className="flex flex-wrap items-end gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Reporte</label>
+            <label htmlFor="report-type" className="block text-sm font-medium text-gray-700 mb-1">Tipo de Reporte</label>
             <select
+              id="report-type"
               value={reportType}
               onChange={(e) => { setReportType(e.target.value); setGenerated(false) }}
               className="px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
@@ -158,8 +159,9 @@ export default function ReportsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Fecha Inicio</label>
+            <label htmlFor="report-start" className="block text-sm font-medium text-gray-700 mb-1">Fecha Inicio</label>
             <input
+              id="report-start"
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
@@ -168,8 +170,9 @@ export default function ReportsPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Fecha Fin</label>
+            <label htmlFor="report-end" className="block text-sm font-medium text-gray-700 mb-1">Fecha Fin</label>
             <input
+              id="report-end"
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}

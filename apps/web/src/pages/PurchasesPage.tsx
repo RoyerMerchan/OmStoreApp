@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import api from '../lib/axios'
 import { toast } from 'sonner'
-import { Plus, Search, X, Loader2 } from 'lucide-react'
+import { Plus, Search, X, Loader2, PackagePlus } from 'lucide-react'
 
 interface Purchase {
   id: number
@@ -19,10 +19,14 @@ interface Supplier {
 
 interface Product {
   id: number
+  productId: number
   name: string
   sku: string
   size: string
   color: string
+  stock: number
+  cost: number
+  price: number
 }
 
 interface PurchaseItem {
@@ -50,6 +54,16 @@ export default function PurchasesPage() {
   const [showProductDropdown, setShowProductDropdown] = useState(false)
 
   const [submitting, setSubmitting] = useState(false)
+
+  // Quick product creation
+  const [showQuickProduct, setShowQuickProduct] = useState(false)
+  const [qpName, setQpName] = useState('')
+  const [qpSize, setQpSize] = useState('')
+  const [qpColor, setQpColor] = useState('')
+  const [qpCost, setQpCost] = useState(0)
+  const [qpPrice, setQpPrice] = useState(0)
+  const [qpStock, setQpStock] = useState(1)
+  const [qpCreating, setQpCreating] = useState(false)
 
   useEffect(() => {
     loadPurchases()
@@ -106,7 +120,7 @@ export default function PurchasesPage() {
           size: product.size,
           color: product.color,
           quantity: 1,
-          unitCost: 0,
+          unitCost: product.cost || 0,
         },
       ]
     })
@@ -124,6 +138,52 @@ export default function PurchasesPage() {
     )
   }
 
+  async function handleQuickProduct(e: React.FormEvent) {
+    e.preventDefault()
+    if (!qpName) { toast.error('Nombre del producto requerido'); return }
+    if (!qpSize) { toast.error('Talla requerida'); return }
+    if (!qpColor) { toast.error('Color requerido'); return }
+
+    setQpCreating(true)
+    try {
+      const sku = `${qpName.substring(0, 3).toUpperCase()}-${qpSize}-${qpColor.substring(0, 3).toUpperCase()}-${Date.now()}`
+      const productRes = await api.post('/products', {
+        name: qpName,
+        gender: 'UNISEX',
+        baseCost: qpCost,
+        basePrice: qpPrice || qpCost * 1.5,
+      })
+      if (!productRes.data.success) { toast.error('Error al crear producto'); return }
+
+      const product = productRes.data.data
+      const variantRes = await api.post(`/products/${product.id}/variants`, {
+        size: qpSize,
+        color: qpColor,
+        sku,
+        cost: qpCost,
+        price: qpPrice || qpCost * 1.5,
+        stock: qpStock,
+        minStock: 1,
+      })
+      if (!variantRes.data.success) { toast.error('Error al crear variante'); return }
+
+      const variant = variantRes.data.data
+      addItem({ id: variant.id, productId: variant.productId, name: product.name, sku: variant.sku, size: variant.size, color: variant.color, stock: variant.stock, cost: variant.cost || 0, price: variant.price || 0 })
+      setShowQuickProduct(false)
+      setQpName('')
+      setQpSize('')
+      setQpColor('')
+      setQpCost(0)
+      setQpPrice(0)
+      setQpStock(1)
+      toast.success('Producto creado y agregado a la compra')
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Error al crear producto')
+    } finally {
+      setQpCreating(false)
+    }
+  }
+
   const total = items.reduce((acc, i) => acc + i.quantity * i.unitCost, 0)
 
   async function handleSubmit(e: React.FormEvent) {
@@ -135,8 +195,8 @@ export default function PurchasesPage() {
     setSubmitting(true)
     try {
       const payload = {
-        supplierId: parseInt(supplierId),
-        invoiceNumber,
+        supplierId,
+        invoiceNo: invoiceNumber,
         notes,
         items: items.map((i) => ({ variantId: i.variantId, quantity: i.quantity, unitCost: i.unitCost })),
       }
@@ -213,8 +273,9 @@ export default function PurchasesPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Detalles de Compra</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Proveedor</label>
+                <label htmlFor="purchase-supplier" className="block text-sm font-medium text-gray-700 mb-1">Proveedor</label>
                 <select
+                  id="purchase-supplier"
                   value={supplierId}
                   onChange={(e) => setSupplierId(e.target.value)}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
@@ -227,8 +288,9 @@ export default function PurchasesPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Factura #</label>
+                <label htmlFor="purchase-invoice" className="block text-sm font-medium text-gray-700 mb-1">Factura #</label>
                 <input
+                  id="purchase-invoice"
                   type="text"
                   value={invoiceNumber}
                   onChange={(e) => setInvoiceNumber(e.target.value)}
@@ -237,8 +299,9 @@ export default function PurchasesPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
+                <label htmlFor="purchase-notes" className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
                 <input
+                  id="purchase-notes"
                   type="text"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
@@ -251,34 +314,46 @@ export default function PurchasesPage() {
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Productos</h2>
-            <div className="relative mb-4">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={productSearch}
-                onChange={(e) => { setProductSearch(e.target.value); setShowProductDropdown(true) }}
-                onFocus={() => setShowProductDropdown(true)}
-                placeholder="Buscar producto por nombre o SKU..."
-                className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-              />
-              {showProductDropdown && products.length > 0 && (
-                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                  {products.map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => addItem(p)}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex justify-between"
-                    >
-                      <span>
-                        <span className="font-medium">{p.name}</span>
-                        <span className="text-gray-400 ml-2">{p.size} / {p.color}</span>
-                      </span>
-                      <span className="text-gray-500">{p.sku}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
+            <div className="flex gap-2 mb-4">
+              <div className="relative flex-1">
+                <label htmlFor="purchase-product-search" className="sr-only">Buscar producto</label>
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  id="purchase-product-search"
+                  type="text"
+                  value={productSearch}
+                  onChange={(e) => { setProductSearch(e.target.value); setShowProductDropdown(true) }}
+                  onFocus={() => setShowProductDropdown(true)}
+                  placeholder="Buscar producto por nombre o SKU..."
+                  className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                />
+                {showProductDropdown && products.length > 0 && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    {products.map((p) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => addItem(p)}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm flex justify-between"
+                      >
+                        <span>
+                          <span className="font-medium">{p.name}</span>
+                          <span className="text-gray-400 ml-2">{p.size} / {p.color}</span>
+                        </span>
+                        <span className="text-gray-500">{p.sku}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowQuickProduct(true)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm whitespace-nowrap"
+              >
+                <PackagePlus size={16} />
+                Nuevo
+              </button>
             </div>
 
             {items.length > 0 && (
@@ -361,6 +436,52 @@ export default function PurchasesPage() {
             </button>
           </div>
         </form>
+      )}
+
+      {/* Quick product modal */}
+      {showQuickProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <form onSubmit={handleQuickProduct} className="bg-white rounded-xl shadow-xl border border-gray-200 p-6 w-full max-w-md mx-4 space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900">Nuevo Producto Rápido</h3>
+            <div>
+              <label htmlFor="qp-name" className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
+              <input id="qp-name" type="text" value={qpName} onChange={(e) => setQpName(e.target.value)} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" required />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label htmlFor="qp-size" className="block text-sm font-medium text-gray-700 mb-1">Talla *</label>
+                <input id="qp-size" type="text" value={qpSize} onChange={(e) => setQpSize(e.target.value)} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" required placeholder="Ej: 38" />
+              </div>
+              <div>
+                <label htmlFor="qp-color" className="block text-sm font-medium text-gray-700 mb-1">Color *</label>
+                <input id="qp-color" type="text" value={qpColor} onChange={(e) => setQpColor(e.target.value)} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" required placeholder="Ej: Negro" />
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label htmlFor="qp-cost" className="block text-sm font-medium text-gray-700 mb-1">Costo</label>
+                <input id="qp-cost" type="number" value={qpCost} onChange={(e) => setQpCost(parseFloat(e.target.value) || 0)} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" min={0} step={0.01} />
+              </div>
+              <div>
+                <label htmlFor="qp-price" className="block text-sm font-medium text-gray-700 mb-1">Precio</label>
+                <input id="qp-price" type="number" value={qpPrice} onChange={(e) => setQpPrice(parseFloat(e.target.value) || 0)} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" min={0} step={0.01} />
+              </div>
+              <div>
+                <label htmlFor="qp-stock" className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+                <input id="qp-stock" type="number" value={qpStock} onChange={(e) => setQpStock(parseInt(e.target.value) || 1)} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" min={1} />
+              </div>
+            </div>
+            <div className="flex gap-3 justify-end pt-2">
+              <button type="button" onClick={() => setShowQuickProduct(false)} className="px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                Cancelar
+              </button>
+              <button type="submit" disabled={qpCreating} className="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2">
+                {qpCreating && <Loader2 className="animate-spin" size={16} />}
+                {qpCreating ? 'Creando...' : 'Crear y Agregar'}
+              </button>
+            </div>
+          </form>
+        </div>
       )}
     </div>
   )

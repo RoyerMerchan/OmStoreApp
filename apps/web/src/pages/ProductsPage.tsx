@@ -149,8 +149,10 @@ export default function ProductsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <div className="relative lg:col-span-2">
+            <label htmlFor="product-search" className="sr-only">Buscar producto</label>
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
+              id="product-search"
               type="text"
               placeholder="Buscar por nombre..."
               value={search}
@@ -159,43 +161,55 @@ export default function ProductsPage() {
             />
           </div>
 
-          <select
-            value={brandId}
-            onChange={(e) => updateFilter('brandId', e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
-          >
-            <option value="">Todas las marcas</option>
-            {brands.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label htmlFor="product-brand-filter" className="sr-only">Filtrar por marca</label>
+            <select
+              id="product-brand-filter"
+              value={brandId}
+              onChange={(e) => updateFilter('brandId', e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+            >
+              <option value="">Todas las marcas</option>
+              {brands.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <select
-            value={categoryId}
-            onChange={(e) => updateFilter('categoryId', e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
-          >
-            <option value="">Todas las categorías</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label htmlFor="product-category-filter" className="sr-only">Filtrar por categoría</label>
+            <select
+              id="product-category-filter"
+              value={categoryId}
+              onChange={(e) => updateFilter('categoryId', e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+            >
+              <option value="">Todas las categorías</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <select
-            value={gender}
-            onChange={(e) => updateFilter('gender', e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
-          >
-            {genderOptions.map((g) => (
-              <option key={g.value} value={g.value}>
-                {g.label}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label htmlFor="product-gender-filter" className="sr-only">Filtrar por género</label>
+            <select
+              id="product-gender-filter"
+              value={gender}
+              onChange={(e) => updateFilter('gender', e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+            >
+              {genderOptions.map((g) => (
+                <option key={g.value} value={g.value}>
+                  {g.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -255,14 +269,14 @@ export default function ProductsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           to={`/productos/${p.id}/editar`}
-                          className="p-2 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                          className="min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
                           title="Editar"
                         >
                           <Edit size={16} />
                         </Link>
                         <Link
                           to={`/productos/${p.id}/variantes`}
-                          className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                          className="min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
                           title="Variantes"
                         >
                           <Grid3X3 size={16} />

@@ -132,38 +132,41 @@ export default function ProductFormPage() {
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4 dark:bg-gray-900 dark:border-gray-800">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
+          <label htmlFor="product-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre *</label>
           <input
+            id="product-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             placeholder="Nombre del producto"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+          <label htmlFor="product-desc" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
           <textarea
+            id="product-desc"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none resize-none"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none resize-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             placeholder="Descripción del producto"
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Marca *</label>
+            <label htmlFor="product-brand" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Marca *</label>
             <select
+              id="product-brand"
               value={brandId}
               onChange={(e) => setBrandId(e.target.value)}
               required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             >
               <option value="">Seleccionar marca</option>
               {brands.map((b) => (
@@ -175,12 +178,13 @@ export default function ProductFormPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
+            <label htmlFor="product-category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoría *</label>
             <select
+              id="product-category"
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
               required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             >
               <option value="">Seleccionar categoría</option>
               {categories.map((c) => (
@@ -193,12 +197,13 @@ export default function ProductFormPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Género *</label>
+          <label htmlFor="product-gender" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Género *</label>
           <select
+            id="product-gender"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
             required
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
           >
             {GENDERS.map((g) => (
               <option key={g.value} value={g.value}>
@@ -210,41 +215,44 @@ export default function ProductFormPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Precio base *</label>
+            <label htmlFor="product-price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Precio base *</label>
             <input
+              id="product-price"
               type="number"
               step="0.01"
               min="0"
               value={basePrice}
               onChange={(e) => setBasePrice(e.target.value)}
               required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               placeholder="0.00"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Costo base *</label>
+            <label htmlFor="product-cost" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Costo base *</label>
             <input
+              id="product-cost"
               type="number"
               step="0.01"
               min="0"
               value={baseCost}
               onChange={(e) => setBaseCost(e.target.value)}
               required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
               placeholder="0.00"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">URL imagen</label>
+          <label htmlFor="product-image" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL imagen</label>
           <input
+            id="product-image"
             type="url"
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             placeholder="https://ejemplo.com/imagen.jpg"
           />
         </div>
@@ -252,12 +260,13 @@ export default function ProductFormPage() {
         {isEdit && (
           <label className="flex items-center gap-2 cursor-pointer">
             <input
+              id="product-active"
               type="checkbox"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
               className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
             />
-            <span className="text-sm font-medium text-gray-700">Producto activo</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Producto activo</span>
           </label>
         )}
 

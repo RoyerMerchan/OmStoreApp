@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-02T11:24:00.000Z",
+  "title": "Design System: OmStore",
+  "extensions": {
+    "colorMeta": {
+      "primary-600": {
+        "role": "primary",
+        "displayName": "Gris Carbón",
+        "canonical": "#1a1a1a",
+        "tonalRamp": ["#000000", "#080808", "#0d0d0d", "#1a1a1a", "#666666", "#818181", "#a4a4a4", "#c8c8c8"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Fondo Claro",
+        "canonical": "#f9fafb",
+        "tonalRamp": ["#030712", "#1f2937", "#374151", "#6b7280", "#9ca3af", "#d1d5db", "#e5e7eb", "#f9fafb"]
+      },
+      "semantic-success": {
+        "role": "semantic",
+        "displayName": "Verde Éxito",
+        "canonical": "#16a34a",
+        "tonalRamp": ["#052e16", "#166534", "#15803d", "#16a34a", "#22c55e", "#4ade80", "#86efac", "#dcfce7"]
+      },
+      "semantic-error": {
+        "role": "semantic",
+        "displayName": "Rojo Error",
+        "canonical": "#dc2626",
+        "tonalRamp": ["#450a0a", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fee2e2"]
+      }
+    },
+    "typographyMeta": {
+      "heading": {
+        "displayName": "Heading",
+        "purpose": "Títulos de página y sección."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Contenido general, tablas, descripciones."
+      }
+    },
+    "shadows": [
+      { "name": "card", "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)", "purpose": "Sombra sutil para cards y contenedores." }
+    ],
+    "motion": [
+      { "name": "ease-default", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Easing default para transiciones de estado." },
+      { "name": "duration-default", "value": "200ms", "purpose": "Duración default para transiciones." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Botón de acción principal. Usar para CTAs primarias como guardar, crear, confirmar.",
+      "html": "<button class=\"ds-btn-primary\">Guardar</button>",
+      "css": ".ds-btn-primary { background-color: #1a1a1a; color: #ffffff; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: none; cursor: pointer; transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background-color: #0d0d0d; } .ds-btn-primary:focus-visible { outline: 2px solid #1a1a1a; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Contenedor principal para paneles, dashboards y secciones.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\">Título de Sección</div><div class=\"ds-card-body\">Contenido del card aquí.</div></div>",
+      "css": ".ds-card { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb; padding: 1.5rem; } .ds-card-header { font-size: 1.125rem; font-weight: 600; color: #111827; margin-bottom: 1rem; } .ds-card-body { font-size: 0.875rem; color: #6b7280; line-height: 1.5; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de texto estándar para formularios.",
+      "html": "<label class=\"ds-label\">Email</label><input class=\"ds-input\" type=\"email\" placeholder=\"usuario@ejemplo.com\" />",
+      "css": ".ds-label { display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.25rem; } .ds-input { width: 100%; padding: 0.625rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.875rem; color: #111827; background-color: #ffffff; outline: none; transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-input:focus { border-color: #1a1a1a; box-shadow: 0 0 0 2px rgba(26, 26, 26, 0.2); } .ds-input::placeholder { color: #9ca3af; }"
+    },
+    {
+      "name": "Select",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Selector desplegable estándar para formularios y filtros.",
+      "html": "<select class=\"ds-select\"><option>Todas las marcas</option><option>Nike</option><option>Adidas</option></select>",
+      "css": ".ds-select { padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.875rem; color: #111827; background-color: #ffffff; outline: none; cursor: pointer; transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-select:focus { border-color: #1a1a1a; box-shadow: 0 0 0 2px rgba(26, 26, 26, 0.2); }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Indicador de estado con código de color semántico.",
+      "html": "<span class=\"ds-badge ds-badge-success\">Activo</span><span class=\"ds-badge ds-badge-error\">Inactivo</span>",
+      "css": ".ds-badge { display: inline-flex; padding: 0.25rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 500; } .ds-badge-success { background-color: #dcfce7; color: #15803d; } .ds-badge-error { background-color: #fee2e2; color: #b91c1c; } .ds-badge-warning { background-color: #fef9c3; color: #a16207; }"
+    },
+    {
+      "name": "Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Ítem de navegación en sidebar. Estados default, hover y activo.",
+      "html": "<nav class=\"ds-sidebar\"><a class=\"ds-nav-item ds-nav-active\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\"/></svg>Dashboard</a><a class=\"ds-nav-item\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z\"/><line x1=\"3\" y1=\"6\" x2=\"21\" y2=\"6\"/><path d=\"M16 10a4 4 0 0 1-8 0\"/></svg>Productos</a></nav>",
+      "css": ".ds-sidebar { width: 16rem; background-color: #ffffff; border-right: 1px solid #e5e7eb; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; } .ds-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; color: #4b5563; text-decoration: none; transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1), color 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-item:hover { background-color: #f3f4f6; color: #111827; } .ds-nav-active, .ds-nav-active:hover { background-color: #f7f7f7; color: #1a1a1a; }"
+    },
+    {
+      "name": "Table",
+      "kind": "custom",
+      "refersTo": "table",
+      "description": "Tabla de datos estándar con header, rows y hover.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>Nombre</th><th>Marca</th><th>Precio</th></tr></thead><tbody><tr><td>Zapato Deportivo</td><td>Nike</td><td>$120.000</td></tr><tr><td>Sandalia Verano</td><td>Adidas</td><td>$85.000</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; font-size: 0.875rem; border-collapse: collapse; } .ds-table thead tr { background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; } .ds-table th { text-align: left; padding: 0.75rem 1rem; font-weight: 500; color: #6b7280; } .ds-table td { padding: 0.75rem 1rem; color: #111827; border-bottom: 1px solid #f3f4f6; } .ds-table tbody tr { transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-table tbody tr:hover { background-color: #f9fafb; }"
+    },
+    {
+      "name": "Loading Spinner",
+      "kind": "custom",
+      "refersTo": "loading",
+      "description": "Indicador de carga para estados de espera.",
+      "html": "<div class=\"ds-loading-container\"><svg class=\"ds-spinner\" width=\"32\" height=\"32\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#1a1a1a\" stroke-width=\"2\"><path d=\"M21 12a9 9 0 1 1-6.219-8.56\"/></svg></div>",
+      "css": ".ds-loading-container { display: flex; align-items: center; justify-content: center; padding: 4rem 0; } @keyframes ds-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .ds-spinner { animation: ds-spin 1s linear infinite; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El Mostrador",
+    "overview": "Como el mostrador de una tienda de zapatos bien organizada: todo tiene su lugar, las herramientas están a la mano, la superficie de trabajo está limpia. OmStore es un sistema administrativo que prioriza claridad sobre densidad, donde los datos financieros y de inventario se presentan con precisión profesional pero sin frialdad corporativa. Este sistema rechaza explícitamente la sobrecarga visual: sin dashboards ruidosos, sin gradientes decorativos, sin información apilada sin jerarquía.",
+    "keyCharacteristics": [
+      "Paleta neutral monocromática con acentos semánticos precisos",
+      "Cards con sombras suaves y bordes definidos",
+      "Tipografía funcional sin adornos",
+      "Estados interactivos sólidos y predecibles",
+      "Modo oscuro completo basado en clase .dark"
+    ],
+    "rules": [
+      { "name": "La Regla del Silencio Visual", "body": "El gris es el lienzo. Los acentos de color ocupan <10% de la pantalla y solo comunican estado o acción. Su rareza es el punto.", "section": "colors" },
+      { "name": "La Regla del Tamaño Único", "body": "La interfaz usa 4 tamaños de fuente máximo (0.75rem, 0.875rem, 1.125rem, 1.5rem). No hay tamaños decorativos.", "section": "typography" },
+      { "name": "La Regla Plana por Defecto", "body": "Las superficies son planas en reposo. Las sombras son sutiles (solo un rayo de luz). La profundidad la da el stacking de fondos, no la elevación.", "section": "elevation" }
+    ],
+    "dos": [
+      "Usar la escala de grises primaria como color de acción principal.",
+      "Mantener las cards con fondo blanco, borde 1px y shadow-sm consistente.",
+      "Usar los acentos semánticos solo para estado.",
+      "Transicionar solo transition-colors en elementos interactivos."
+    ],
+    "donts": [
+      "No agregar colores decorativos fuera del sistema semántico.",
+      "No sobrecargar el dashboard con información sin jerarquía.",
+      "No usar sombras múltiples, glassmorphism, o fondos texturizados.",
+      "No variar radios de esquina inconsistentemente."
+    ]
+  }
+}

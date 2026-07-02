@@ -181,8 +181,9 @@ export default function SuppliersPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                  <label htmlFor="supplier-name" className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
                   <input
+                    id="supplier-name"
                     type="text"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -191,8 +192,9 @@ export default function SuppliersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Documento</label>
+                  <label htmlFor="supplier-doc" className="block text-sm font-medium text-gray-700 mb-1">Documento</label>
                   <input
+                    id="supplier-doc"
                     type="text"
                     value={form.document}
                     onChange={(e) => setForm({ ...form, document: e.target.value })}
@@ -200,8 +202,9 @@ export default function SuppliersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                  <label htmlFor="supplier-phone" className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
                   <input
+                    id="supplier-phone"
                     type="text"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -209,8 +212,9 @@ export default function SuppliersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label htmlFor="supplier-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                   <input
+                    id="supplier-email"
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -219,8 +223,9 @@ export default function SuppliersPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                <label htmlFor="supplier-address" className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
                 <input
+                  id="supplier-address"
                   type="text"
                   value={form.address}
                   onChange={(e) => setForm({ ...form, address: e.target.value })}
