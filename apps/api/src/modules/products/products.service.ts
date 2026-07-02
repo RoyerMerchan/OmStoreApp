@@ -66,15 +66,34 @@ export const productService = {
     if (filters.gender) where.gender = filters.gender as any
     if (filters.isActive !== undefined) where.isActive = filters.isActive
 
-    return prisma.product.findMany({
+    const products = await prisma.product.findMany({
       where,
       include: {
         brand: true,
         category: true,
+        variants: filters.name ? { where: { isActive: true }, take: 20 } : false,
         _count: { select: { variants: true } },
       },
       orderBy: { createdAt: 'desc' },
     })
+
+    if (filters.name) {
+      return products.flatMap((p) =>
+        (p as any).variants.map((v: any) => ({
+          id: v.id,
+          productId: p.id,
+          name: p.name,
+          sku: v.sku,
+          size: v.size,
+          color: v.color,
+          stock: v.stock,
+          price: v.price || p.basePrice,
+          cost: v.cost || p.baseCost,
+        }))
+      )
+    }
+
+    return products
   },
 
   async getById(id: string) {

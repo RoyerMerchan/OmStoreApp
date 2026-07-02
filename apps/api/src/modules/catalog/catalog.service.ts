@@ -1,12 +1,13 @@
 import { prisma } from '../../lib/prisma'
 
 export class CatalogService {
-  async getCatalog(filters: { size?: string; brandId?: string; gender?: string; search?: string }) {
+  async getCatalog(filters: { size?: string; brand?: string; brandId?: string; gender?: string; search?: string }) {
     const where: any = { isActive: true }
     const productWhere: any = { isActive: true }
 
     if (filters.size) where.size = filters.size
     if (filters.brandId) productWhere.brandId = filters.brandId
+    if (filters.brand) productWhere.brand = { name: { contains: filters.brand } }
     if (filters.gender) productWhere.gender = filters.gender as any
     if (filters.search) productWhere.name = { contains: filters.search }
 
@@ -43,12 +44,14 @@ export class CatalogService {
     }
 
     const sortedSizes = [...sizeMap.keys()].sort((a, b) => Number(a) - Number(b))
+    const brandSet = new Set(available.map(v => v.product.brand?.name).filter(Boolean))
 
     return {
       generatedAt: new Date().toISOString(),
       totalVariants: available.length,
       sizes: sortedSizes.map(s => ({ size: s, items: sizeMap.get(s)! })),
       sizeSummary: sortedSizes.map(s => ({ size: s, count: sizeCount.get(s)! })),
+      brands: [...brandSet].sort(),
     }
   }
 

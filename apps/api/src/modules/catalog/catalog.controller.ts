@@ -6,8 +6,8 @@ import { sendSuccess } from '../../lib/response'
 export class CatalogController {
   async getCatalog(req: Request, res: Response, next: NextFunction) {
     try {
-      const { size, brandId, gender, search } = req.query as any
-      const data = await catalogService.getCatalog({ size, brandId, gender, search })
+      const { size, brand, brandId, gender, search } = req.query as any
+      const data = await catalogService.getCatalog({ size, brand, brandId, gender, search })
       sendSuccess(res, data)
     } catch (err) { next(err) }
   }

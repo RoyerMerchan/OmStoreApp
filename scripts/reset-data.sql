@@ -1,0 +1,27 @@
+-- Reset all data except User
+-- Disable FK checks for truncation order
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE Expense;
+TRUNCATE TABLE CashMovement;
+TRUNCATE TABLE LayawayPayment;
+TRUNCATE TABLE LayawayItem;
+TRUNCATE TABLE SalePayment;
+TRUNCATE TABLE SaleItem;
+TRUNCATE TABLE StockMovement;
+TRUNCATE TABLE PurchaseItem;
+TRUNCATE TABLE AuditLog;
+TRUNCATE TABLE Layaway;
+TRUNCATE TABLE Sale;
+TRUNCATE TABLE Purchase;
+TRUNCATE TABLE CashSession;
+TRUNCATE TABLE ExpenseCategory;
+TRUNCATE TABLE Customer;
+TRUNCATE TABLE Supplier;
+TRUNCATE TABLE ProductVariant;
+TRUNCATE TABLE Product;
+TRUNCATE TABLE Brand;
+TRUNCATE TABLE Category;
+
+SET FOREIGN_KEY_CHECKS = 1;

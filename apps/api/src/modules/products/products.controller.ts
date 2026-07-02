@@ -6,13 +6,15 @@ import { productService } from './products.service'
 export const productController = {
   async list(req: AuthRequest, res: Response) {
     try {
-      const { name, brandId, categoryId, gender, isActive } = req.query
+      const { name, search, brandId, categoryId, gender, isActive, active } = req.query
       const filters: any = {}
-      if (name) filters.name = name as string
+      const searchTerm = (name || search) as string
+      if (searchTerm) filters.name = searchTerm
       if (brandId) filters.brandId = brandId as string
       if (categoryId) filters.categoryId = categoryId as string
       if (gender) filters.gender = gender as string
-      if (isActive !== undefined) filters.isActive = isActive === 'true'
+      const activeFlag = isActive ?? active
+      if (activeFlag !== undefined) filters.isActive = activeFlag === 'true'
 
       const products = await productService.list(filters)
       sendSuccess(res, products)

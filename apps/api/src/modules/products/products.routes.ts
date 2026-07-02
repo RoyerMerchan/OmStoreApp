@@ -49,7 +49,7 @@ router.post(
   '/:id/variants',
   authenticate,
   authorize(UserRole.ADMIN, UserRole.MANAGER),
-  validate(createVariantSchema),
+  validate(createVariantSchema.omit({ productId: true })),
   productController.createVariant,
 )
 
