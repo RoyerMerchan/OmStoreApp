@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import path from 'path'
 import { authRoutes } from './modules/auth/auth.routes'
 import { userRoutes } from './modules/users/users.routes'
 import productRoutes from './modules/products/products.routes'
@@ -16,6 +17,7 @@ import { expenseRoutes } from './modules/expenses/expenses.routes'
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes'
 import { reportRoutes } from './modules/reports/reports.routes'
 import { catalogRoutes } from './modules/catalog/catalog.routes'
+import { storeRoutes, adminStoreRoutes } from './modules/store/store.routes'
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware'
 
 const app = express()
@@ -23,11 +25,16 @@ const app = express()
 app.use(cors({ origin: process.env.WEB_URL || 'http://localhost:5173', credentials: true }))
 app.use(express.json())
 
+// Static uploads
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')))
+
 // Public routes
 app.use('/api/auth', authRoutes)
 app.use('/api/catalog', catalogRoutes)
+app.use('/api/store', storeRoutes)
 
 // Protected routes
+app.use('/api/admin/store', adminStoreRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/brands', brandRoutes)
 app.use('/api/categories', categoryRoutes)

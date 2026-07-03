@@ -28,6 +28,10 @@ const ExpensesPage = lazy(() => import('./pages/ExpensesPage'))
 const ReportsPage = lazy(() => import('./pages/ReportsPage'))
 const UsersPage = lazy(() => import('./pages/UsersPage'))
 const CatalogPage = lazy(() => import('./pages/CatalogPage'))
+const TiendaCatalogo = lazy(() => import('./pages/tienda/Catalogo'))
+const TiendaProducto = lazy(() => import('./pages/tienda/ProductoDetalle'))
+const TiendaCheckout = lazy(() => import('./pages/tienda/Checkout'))
+const TiendaConfirmacion = lazy(() => import('./pages/tienda/Confirmacion'))
 
 function PageLoader() {
   return (
@@ -57,6 +61,10 @@ export default function App() {
       {/* Public routes */}
       <Route element={<PublicLayout />}>
         <Route path="/catalogo" element={<Suspense fallback={<PageLoader />}><CatalogPage /></Suspense>} />
+        <Route path="/tienda" element={<Suspense fallback={<PageLoader />}><TiendaCatalogo /></Suspense>} />
+        <Route path="/tienda/producto/:id" element={<Suspense fallback={<PageLoader />}><TiendaProducto /></Suspense>} />
+        <Route path="/tienda/checkout" element={<Suspense fallback={<PageLoader />}><TiendaCheckout /></Suspense>} />
+        <Route path="/tienda/confirmacion/:id" element={<Suspense fallback={<PageLoader />}><TiendaConfirmacion /></Suspense>} />
       </Route>
 
       {/* Login */}

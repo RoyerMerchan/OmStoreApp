@@ -35,6 +35,13 @@ async function main() {
   console.log('Expense categories created')
 
   console.log('Users created: admin@omstore.com / admin123 (all users)')
+
+  // Exchange rate
+  const existingRate = await prisma.exchangeRate.findFirst()
+  if (!existingRate) {
+    await prisma.exchangeRate.create({ data: { rate: 60 } })
+    console.log('Exchange rate created: 60 Bs/USD')
+  }
 }
 
 main()

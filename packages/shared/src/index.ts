@@ -23,6 +23,9 @@ export enum StockMovementType {
   ADJUSTMENT_IN = 'ADJUSTMENT_IN',
   ADJUSTMENT_OUT = 'ADJUSTMENT_OUT',
   RETURN = 'RETURN',
+  ECOMMERCE_RESERVE = 'ECOMMERCE_RESERVE',
+  ECOMMERCE_CONFIRM = 'ECOMMERCE_CONFIRM',
+  ECOMMERCE_CANCEL = 'ECOMMERCE_CANCEL',
 }
 
 export enum PaymentMethod {
@@ -65,6 +68,37 @@ export enum AuditAction {
 export enum CashMovementType {
   INCOME = 'INCOME',
   EXPENSE = 'EXPENSE',
+}
+
+export enum StoreDeliveryType {
+  LOCAL = 'LOCAL',
+  INTERNATIONAL = 'INTERNATIONAL',
+  PICKUP = 'PICKUP',
+}
+
+export enum StorePaymentMethod {
+  BS = 'BS',
+  USDT = 'USDT',
+  ZELLE = 'ZELLE',
+  CASH_ON_DELIVERY = 'CASH_ON_DELIVERY',
+}
+
+export enum StoreOrderStatus {
+  PENDING_PAYMENT = 'PENDING_PAYMENT',
+  PAYMENT_DECLARED = 'PAYMENT_DECLARED',
+  CONFIRMED = 'CONFIRMED',
+  PREPARING = 'PREPARING',
+  SHIPPED = 'SHIPPED',
+  DELIVERED = 'DELIVERED',
+  CANCELLED = 'CANCELLED',
+  REJECTED = 'REJECTED',
+}
+
+export interface StoreShippingResult {
+  deliveryType: StoreDeliveryType
+  shippingUsdCents: number
+  available: boolean
+  message: string
 }
 
 export interface ApiResponse<T = unknown> {
