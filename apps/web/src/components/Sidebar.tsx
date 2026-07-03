@@ -20,6 +20,7 @@ import {
   X,
   Sun,
   Moon,
+  Globe,
 } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
 
@@ -38,6 +39,7 @@ const menuItems = [
   { icon: FileText, label: 'Gastos', path: '/gastos' },
   { icon: BarChart3, label: 'Reportes', path: '/reportes' },
   { icon: Shield, label: 'Usuarios', path: '/usuarios' },
+  { icon: Globe, label: 'Pedidos Online', path: '/pedidos' },
 ]
 
 export default function Sidebar() {

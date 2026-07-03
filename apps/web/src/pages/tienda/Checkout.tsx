@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CreditCard, Landmark, Smartphone, DollarSign, Banknote, Loader2, ShoppingBag } from 'lucide-react'
+import { CreditCard, Landmark, Smartphone, DollarSign, Banknote, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { useCartStore } from '../../stores/cartStore'
 import { checkShipping, createOrder, fetchExchangeRate } from '../../lib/storeApi'
 
@@ -99,7 +100,7 @@ export default function Checkout() {
         navigate(`/tienda/confirmacion/${res.data.id}`)
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Error al crear pedido')
+      toast.error(err.response?.data?.message || 'Error al crear pedido')
     } finally {
       setSubmitting(false)
     }
@@ -139,7 +140,7 @@ export default function Checkout() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">País *</label>
               <select value={country} onChange={(e) => setCountry(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none">
+                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -147,7 +148,7 @@ export default function Checkout() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estado *</label>
                 <select value={state} onChange={(e) => setState(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none">
+                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                   <option value="">Seleccionar</option>
                   {Object.keys(VENEZUELA_STATES).map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -157,7 +158,7 @@ export default function Checkout() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ciudad *</label>
                 <select value={city} onChange={(e) => setCity(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none">
+                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                   <option value="">Seleccionar</option>
                   {(VENEZUELA_STATES[state] || []).map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -167,7 +168,7 @@ export default function Checkout() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Zona *</label>
                 <select value={zone} onChange={(e) => setZone(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none">
+                  className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                   <option value="">Seleccionar</option>
                   {(city === 'Caracas' ? CARACAS_ZONES : city === 'Los Teques' ? LOS_TEQUES_ZONES : []).map((z) => <option key={z} value={z}>{z}</option>)}
                   <option value="otra">Otra</option>

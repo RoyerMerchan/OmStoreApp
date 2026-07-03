@@ -32,6 +32,8 @@ const TiendaCatalogo = lazy(() => import('./pages/tienda/Catalogo'))
 const TiendaProducto = lazy(() => import('./pages/tienda/ProductoDetalle'))
 const TiendaCheckout = lazy(() => import('./pages/tienda/Checkout'))
 const TiendaConfirmacion = lazy(() => import('./pages/tienda/Confirmacion'))
+const TiendaOrdenStatus = lazy(() => import('./pages/tienda/OrdenStatus'))
+const AdminPedidos = lazy(() => import('./pages/AdminPedidos'))
 
 function PageLoader() {
   return (
@@ -65,6 +67,8 @@ export default function App() {
         <Route path="/tienda/producto/:id" element={<Suspense fallback={<PageLoader />}><TiendaProducto /></Suspense>} />
         <Route path="/tienda/checkout" element={<Suspense fallback={<PageLoader />}><TiendaCheckout /></Suspense>} />
         <Route path="/tienda/confirmacion/:id" element={<Suspense fallback={<PageLoader />}><TiendaConfirmacion /></Suspense>} />
+        <Route path="/tienda/orden" element={<Suspense fallback={<PageLoader />}><TiendaOrdenStatus /></Suspense>} />
+        <Route path="/tienda/orden/:id" element={<Suspense fallback={<PageLoader />}><TiendaOrdenStatus /></Suspense>} />
       </Route>
 
       {/* Login */}
@@ -95,6 +99,7 @@ export default function App() {
         <Route path="/gastos" element={<Suspense fallback={<PageLoader />}><ExpensesPage /></Suspense>} />
         <Route path="/reportes" element={<Suspense fallback={<PageLoader />}><ReportsPage /></Suspense>} />
         <Route path="/usuarios" element={<Suspense fallback={<PageLoader />}><UsersPage /></Suspense>} />
+        <Route path="/pedidos" element={<Suspense fallback={<PageLoader />}><AdminPedidos /></Suspense>} />
       </Route>
     </Routes>
   )
