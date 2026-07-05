@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, lazy, Suspense } from 'react'
 import { useAuthStore } from './store/authStore'
 import ProtectedLayout from './layouts/ProtectedLayout'
-import PublicLayout from './layouts/PublicLayout'
 
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
@@ -27,12 +26,6 @@ const PurchasesPage = lazy(() => import('./pages/PurchasesPage'))
 const ExpensesPage = lazy(() => import('./pages/ExpensesPage'))
 const ReportsPage = lazy(() => import('./pages/ReportsPage'))
 const UsersPage = lazy(() => import('./pages/UsersPage'))
-const CatalogPage = lazy(() => import('./pages/CatalogPage'))
-const TiendaCatalogo = lazy(() => import('./pages/tienda/Catalogo'))
-const TiendaProducto = lazy(() => import('./pages/tienda/ProductoDetalle'))
-const TiendaCheckout = lazy(() => import('./pages/tienda/Checkout'))
-const TiendaConfirmacion = lazy(() => import('./pages/tienda/Confirmacion'))
-const TiendaOrdenStatus = lazy(() => import('./pages/tienda/OrdenStatus'))
 const AdminPedidos = lazy(() => import('./pages/AdminPedidos'))
 
 function PageLoader() {
@@ -60,21 +53,8 @@ export default function App() {
 
   return (
     <Routes>
-      {/* Public routes */}
-      <Route element={<PublicLayout />}>
-        <Route path="/catalogo" element={<Suspense fallback={<PageLoader />}><CatalogPage /></Suspense>} />
-        <Route path="/tienda" element={<Suspense fallback={<PageLoader />}><TiendaCatalogo /></Suspense>} />
-        <Route path="/tienda/producto/:id" element={<Suspense fallback={<PageLoader />}><TiendaProducto /></Suspense>} />
-        <Route path="/tienda/checkout" element={<Suspense fallback={<PageLoader />}><TiendaCheckout /></Suspense>} />
-        <Route path="/tienda/confirmacion/:id" element={<Suspense fallback={<PageLoader />}><TiendaConfirmacion /></Suspense>} />
-        <Route path="/tienda/orden" element={<Suspense fallback={<PageLoader />}><TiendaOrdenStatus /></Suspense>} />
-        <Route path="/tienda/orden/:id" element={<Suspense fallback={<PageLoader />}><TiendaOrdenStatus /></Suspense>} />
-      </Route>
-
-      {/* Login */}
       <Route path="/login" element={user ? <Navigate to="/" /> : <Suspense fallback={<PageLoader />}><LoginPage /></Suspense>} />
 
-      {/* Protected routes */}
       <Route element={<ProtectedLayout />}>
         <Route path="/" element={<Suspense fallback={<PageLoader />}><DashboardPage /></Suspense>} />
         <Route path="/productos" element={<Suspense fallback={<PageLoader />}><ProductsPage /></Suspense>} />

@@ -3,6 +3,7 @@ export enum UserRole {
   MANAGER = 'MANAGER',
   CASHIER = 'CASHIER',
   SELLER = 'SELLER',
+  CLIENT = 'CLIENT',
 }
 
 export enum Gender {

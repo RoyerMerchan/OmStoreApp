@@ -6,6 +6,9 @@
   "scripts": {
     "setup": "tsx scripts/setup.ts",
     "dev": "pnpm -r --parallel run dev",
+    "dev:api": "pnpm --filter @omstore/api dev",
+    "dev:admin": "pnpm --filter @omstore/admin dev",
+    "dev:store": "pnpm --filter @omstore/store dev",
     "build": "pnpm -r run build",
     "db:generate": "pnpm --filter @omstore/database run db:generate",
     "db:migrate": "pnpm --filter @omstore/database run db:migrate",

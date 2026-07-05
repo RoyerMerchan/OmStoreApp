@@ -12,6 +12,7 @@ enum UserRole {
   MANAGER
   CASHIER
   SELLER
+  CLIENT
 }
 
 enum Gender {
@@ -117,6 +118,22 @@ model User {
   auditLogs       AuditLog[]
   layaways        Layaway[]
   expenses        Expense[]
+  clientProfile   ClientProfile?
+  storeOrders     StoreOrder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClientProfile {
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone     String?
+  address   String?
+  city      String?
+  state     String?
+  zipCode   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -507,28 +524,31 @@ model ExchangeRate {
 model StoreOrder {
   id          String            @id @default(cuid())
   orderNumber String            @unique
-  guestName   String
-  guestPhone  String
-  guestEmail  String
+  clientId    String
+  client     User              @relation(fields: [clientId], references: [id])
   deliveryLocation Json
   deliveryType      StoreDeliveryType
   paymentMethod     StorePaymentMethod
+  paymentReference  String?
+  paymentDate      DateTime?
   status            StoreOrderStatus  @default(PENDING_PAYMENT)
 
   subtotalUsdCents   Int
   shippingUsdCents   Int      @default(0)
   totalUsdCents      Int
   exchangeRateUsed   Decimal  @db.Decimal(12,2)
+  notes              String?  @db.Text
 
   items         StoreOrderItem[]
-  paymentProofs PaymentProof[]
+  paymentProof  PaymentProof?
+  notification  StoreNotification?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([status])
   @@index([createdAt])
-  @@index([guestEmail])
+  @@index([clientId])
 }
 
 model StoreOrderItem {
@@ -546,7 +566,8 @@ model StoreOrderItem {
 
 model PaymentProof {
   id             String             @id @default(cuid())
-  orderId        String
+  orderId        String             @unique
+  order          StoreOrder         @relation(fields: [orderId], references: [id], onDelete: Cascade)
   method         StorePaymentMethod
   reference      String
   proofFileUrl   String?
@@ -554,21 +575,20 @@ model PaymentProof {
   currency       String
   verified       Boolean            @default(false)
   verifiedAt     DateTime?
-
-  order StoreOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  uploadedAt     DateTime           @default(now())
 
   @@index([orderId])
 }
 
-model Notification {
-  id        String   @id @default(cuid())
-  type      String
-  title     String
-  message   String   @db.Text
-  data      Json?
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
+model StoreNotification {
+  id              String   @id @default(cuid())
+  orderId        String   @unique
+  order          StoreOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  adminEmailSent  Boolean  @default(false)
+  adminEmailSentAt DateTime?
+  clientEmailSent Boolean  @default(false)
+  clientEmailSentAt DateTime?
 
-  @@index([read])
-  @@index([createdAt])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

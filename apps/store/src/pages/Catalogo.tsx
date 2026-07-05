@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, ShoppingBag, Loader2 } from 'lucide-react'
-import { fetchProducts } from '../../lib/storeApi'
+import { fetchProducts } from '../lib/storeApi'
 
 interface ProductVariant {
   id: string
@@ -67,8 +67,8 @@ export default function Catalogo() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar..."
-              className="w-full sm:w-48 pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Buscar productos..."
+              className="w-full sm:w-56 pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <select
@@ -91,20 +91,22 @@ export default function Catalogo() {
           <Loader2 className="animate-spin text-primary-600" size={32} />
         </div>
       ) : Object.keys(grouped).length === 0 ? (
-        <div className="text-center py-20 text-gray-500">
+        <div className="text-center py-20 text-gray-500 dark:text-gray-400">
           <ShoppingBag size={48} className="mx-auto mb-3 text-gray-300" />
           <p className="text-lg font-medium">No hay productos disponibles</p>
+          <p className="text-sm mt-1">Intenta con otro filtro de búsqueda</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Object.entries(grouped).map(([productId, variants]) => {
             const p = variants[0].product
             const minPrice = Math.min(...variants.map((v) => v.priceUsdCents))
+            const allOutOfStock = variants.every((v) => v.stock <= 0)
             return (
               <Link
                 key={productId}
                 to={`/tienda/producto/${productId}`}
-                className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow ${allOutOfStock ? 'opacity-60' : ''}`}
               >
                 <div className="aspect-square bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                   {p.imageUrl ? (
@@ -114,10 +116,12 @@ export default function Catalogo() {
                   )}
                 </div>
                 <div className="p-4">
-                  {p.brand && <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{p.brand}</p>}
-                  <h3 className="font-semibold text-gray-900 dark:text-white">{p.name}</h3>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{variants.length} variante(s)</p>
-                  <div className="mt-3">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{p.brand}</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mt-1 line-clamp-2">{p.name}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    {allOutOfStock ? 'Agotado' : `${variants.length} variante(s)`}
+                  </p>
+                  <div className="mt-2">
                     <p className="text-lg font-bold text-gray-900 dark:text-white">
                       ${(minPrice / 100).toFixed(2)} USD
                     </p>

@@ -15,18 +15,23 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[]
+  isDrawerOpen: boolean
   addItem: (item: CartItem) => void
   updateQuantity: (variantId: string, qty: number) => void
   removeItem: (variantId: string) => void
   clearCart: () => void
   totalUsdCents: () => number
   itemCount: () => number
+  openDrawer: () => void
+  closeDrawer: () => void
+  toggleDrawer: () => void
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      isDrawerOpen: false,
 
       addItem: (item) => {
         const items = get().items
@@ -65,6 +70,10 @@ export const useCartStore = create<CartStore>()(
       itemCount: () => {
         return get().items.reduce((sum, i) => sum + i.quantity, 0)
       },
+
+      openDrawer: () => set({ isDrawerOpen: true }),
+      closeDrawer: () => set({ isDrawerOpen: false }),
+      toggleDrawer: () => set((s) => ({ isDrawerOpen: !s.isDrawerOpen })),
     }),
     { name: 'omstore-cart' }
   )

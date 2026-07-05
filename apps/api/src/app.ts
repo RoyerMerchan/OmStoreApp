@@ -18,11 +18,17 @@ import { dashboardRoutes } from './modules/dashboard/dashboard.routes'
 import { reportRoutes } from './modules/reports/reports.routes'
 import { catalogRoutes } from './modules/catalog/catalog.routes'
 import { storeRoutes, adminStoreRoutes } from './modules/store/store.routes'
+import { storeAuthRoutes } from './modules/store-auth/store-auth.routes'
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware'
 
 const app = express()
 
-app.use(cors({ origin: process.env.WEB_URL || 'http://localhost:5173', credentials: true }))
+const CORS_ORIGINS = [
+  process.env.ADMIN_URL || 'http://localhost:5173',
+  process.env.STORE_URL || 'http://localhost:5174',
+].filter(Boolean)
+
+app.use(cors({ origin: CORS_ORIGINS, credentials: true }))
 app.use(express.json())
 
 // Static uploads
@@ -32,6 +38,7 @@ app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')))
 app.use('/api/auth', authRoutes)
 app.use('/api/catalog', catalogRoutes)
 app.use('/api/store', storeRoutes)
+app.use('/api/store-auth', storeAuthRoutes)
 
 // Protected routes
 app.use('/api/admin/store', adminStoreRoutes)

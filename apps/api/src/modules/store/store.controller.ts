@@ -72,9 +72,11 @@ export async function checkShipping(req: Request, res: Response) {
   }
 }
 
-export async function createOrder(req: Request, res: Response) {
+export async function createOrder(req: any, res: Response) {
   try {
-    const order = await storeService.createOrder(req.body)
+    const clientId = req.user?.userId
+    if (!clientId) return res.status(401).json({ success: false, message: 'No autenticado' })
+    const order = await storeService.createOrder(req.body, clientId)
     res.status(201).json({ success: true, data: order })
   } catch (err: any) {
     res.status(400).json({ success: false, message: err.message })
@@ -91,13 +93,44 @@ export async function uploadProof(req: any, res: Response) {
   }
 }
 
-export async function getOrder(req: Request, res: Response) {
+export async function getOrder(req: any, res: Response) {
   try {
-    const order = await storeService.getOrder(req.params.id)
+    const clientId = req.user?.userId
+    const order = await storeService.getOrder(req.params.id, clientId)
     if (!order) return res.status(404).json({ success: false, message: 'Pedido no encontrado' })
     res.json({ success: true, data: order })
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+export async function listClientOrders(req: any, res: Response) {
+  try {
+    const clientId = req.user?.userId
+    if (!clientId) return res.status(401).json({ success: false, message: 'No autenticado' })
+    const orders = await storeService.listClientOrders(clientId)
+    res.json({ success: true, data: orders })
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+export async function uploadPaymentProof(req: any, res: Response) {
+  try {
+    const clientId = req.user?.userId
+    if (!clientId) return res.status(401).json({ success: false, message: 'No autenticado' })
+
+    const { method, reference, declaredAmount, currency, proofFileUrl } = req.body
+    const proof = await storeService.uploadPaymentProof(req.params.id, clientId, {
+      method,
+      reference,
+      declaredAmount: Number(declaredAmount),
+      currency,
+      proofFileUrl,
+    })
+    res.json({ success: true, data: proof })
+  } catch (err: any) {
+    res.status(400).json({ success: false, message: err.message })
   }
 }
 
@@ -132,17 +165,8 @@ export async function setExchangeRate(req: Request, res: Response) {
 export async function getNotifications(req: Request, res: Response) {
   try {
     const unreadOnly = req.query.unread === 'true'
-    const notifications = await storeService.getNotifications(unreadOnly)
+    const notifications = await storeService.getStoreNotifications(unreadOnly)
     res.json({ success: true, data: notifications })
-  } catch (err: any) {
-    res.status(500).json({ success: false, message: err.message })
-  }
-}
-
-export async function markNotificationRead(req: Request, res: Response) {
-  try {
-    const notif = await storeService.markNotificationRead(req.params.id)
-    res.json({ success: true, data: notif })
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message })
   }

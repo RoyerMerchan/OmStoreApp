@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import path from 'path'
 import fs from 'fs'
+import { sendNewOrderAlertToAdmins, sendOrderConfirmationToClient } from '../../lib/email'
 
 const prisma = new PrismaClient()
 
@@ -131,26 +132,31 @@ export function checkShipping(country: string, city: string, zone: string) {
     }
   }
 
-    if (country.toLowerCase() !== 'venezuela') {
-      return {
-        deliveryType: 'INTERNATIONAL' as DeliveryType,
-        shippingUsdCents: 0,
-        available: true,
-        message: 'Envío internacional — el costo se confirmará con el asesor',
-      }
-    }
-
+  if (country.toLowerCase() !== 'venezuela') {
     return {
-      deliveryType: 'PICKUP' as DeliveryType,
+      deliveryType: 'INTERNATIONAL' as DeliveryType,
       shippingUsdCents: 0,
       available: true,
-      message: 'Retiro en tienda disponible',
+      message: 'Envío internacional — el costo se confirmará con el asesor',
     }
-    // handled above
+  }
+
+  return {
+    deliveryType: 'PICKUP' as DeliveryType,
+    shippingUsdCents: 0,
+    available: true,
+    message: 'Retiro en tienda disponible',
+  }
 }
 
-export async function createOrder(input: any) {
+export async function createOrder(input: any, clientId: string) {
   const rate = await getLatestExchangeRate()
+
+  const client = await prisma.user.findUnique({
+    where: { id: clientId },
+    include: { clientProfile: true },
+  })
+  if (!client) throw new Error('Cliente no encontrado')
 
   const itemsWithPrices = await Promise.all(
     input.items.map(async (item: any) => {
@@ -168,7 +174,7 @@ export async function createOrder(input: any) {
   )
 
   const subtotalUsdCents = itemsWithPrices.reduce((sum, i) => sum + i.unitPriceCents * i.quantity, 0)
-  const shippingUsdCents = input.deliveryType === 'PICKUP' ? 0 : 0
+  const shippingUsdCents = input.deliveryType === 'PICKUP' ? 0 : (input.shippingUsdCents ?? 0)
   const totalUsdCents = subtotalUsdCents + shippingUsdCents
 
   const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
@@ -196,17 +202,18 @@ export async function createOrder(input: any) {
     const created = await tx.storeOrder.create({
       data: {
         orderNumber,
-        guestName: input.guestName,
-        guestPhone: input.guestPhone,
-        guestEmail: input.guestEmail,
+        clientId,
         deliveryLocation: input.deliveryLocation,
         deliveryType: input.deliveryType,
         paymentMethod: input.paymentMethod,
-        status: input.paymentMethod === 'CASH_ON_DELIVERY' ? 'PENDING_PAYMENT' : 'PENDING_PAYMENT',
+        paymentReference: input.paymentReference,
+        paymentDate: input.paymentDate,
+        status: 'PENDING_PAYMENT',
         subtotalUsdCents,
         shippingUsdCents,
         totalUsdCents,
         exchangeRateUsed: rate,
+        notes: input.notes,
         items: {
           create: itemsWithPrices.map((i) => ({
             variantId: i.variant.id,
@@ -214,45 +221,55 @@ export async function createOrder(input: any) {
             unitPriceUsdCents: i.unitPriceCents,
           })),
         },
-      },
-      include: { items: true },
-    })
-
-    if (input.proof) {
-      await tx.paymentProof.create({
-        data: {
-          orderId: created.id,
-          method: input.proof.method,
-          reference: input.proof.reference,
-          declaredAmount: input.proof.declaredAmount,
-          currency: input.proof.currency,
+        notification: {
+          create: {},
         },
-      })
-      await tx.storeOrder.update({
-        where: { id: created.id },
-        data: { status: 'PAYMENT_DECLARED' },
-      })
-    }
-
-    await tx.notification.create({
-      data: {
-        type: 'new_order',
-        title: `Nuevo pedido #${orderNumber}`,
-        message: `${input.guestName} - ${input.paymentMethod === 'CASH_ON_DELIVERY' ? 'Contraentrega' : `Pago ${input.paymentMethod}`}`,
-        data: { orderId: created.id, orderNumber },
+      },
+      include: {
+        items: { include: { variant: { include: { product: true } } } },
+        client: { select: { name: true, email: true } },
+        notification: true,
       },
     })
 
-    created.status = input.proof ? 'PAYMENT_DECLARED' : 'PENDING_PAYMENT'
     return created
   })
+
+  const totalBs = (order.totalUsdCents * rate).toLocaleString('es-VE', { style: 'currency', currency: 'VES' })
+  const itemsFormatted = order.items.map((i) => ({
+    name: i.variant.product.name,
+    quantity: i.quantity,
+    price: totalBs,
+  }))
+
+  try {
+    await sendNewOrderAlertToAdmins({
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      clientName: order.client.name,
+      clientEmail: order.client.email,
+      total: totalBs,
+      paymentMethod: order.paymentMethod,
+      paymentReference: order.paymentReference,
+      items: itemsFormatted,
+    })
+    await prisma.storeNotification.update({
+      where: { id: order.notification!.id },
+      data: { adminEmailSent: true, adminEmailSentAt: new Date() },
+    })
+  } catch (e) {
+    console.error('Failed to send admin email:', e)
+  }
 
   return order
 }
 
-export async function getOrder(orderId: string) {
-  const order = await prisma.storeOrder.findUnique({
-    where: { id: orderId },
+export async function getOrder(orderId: string, clientId?: string) {
+  const where: any = { id: orderId }
+  if (clientId) where.clientId = clientId
+
+  const order = await prisma.storeOrder.findFirst({
+    where,
     include: {
       items: {
         include: {
@@ -261,10 +278,22 @@ export async function getOrder(orderId: string) {
           },
         },
       },
-      paymentProofs: true,
+      paymentProof: true,
+      client: { select: { id: true, name: true, email: true, clientProfile: true } },
     },
   })
   return order
+}
+
+export async function listClientOrders(clientId: string) {
+  return prisma.storeOrder.findMany({
+    where: { clientId },
+    include: {
+      items: { include: { variant: { include: { product: true } } } },
+      paymentProof: true,
+    },
+    orderBy: { createdAt: 'desc' },
+  })
 }
 
 export async function listOrders(status?: string) {
@@ -275,7 +304,9 @@ export async function listOrders(status?: string) {
     where,
     include: {
       items: { include: { variant: { include: { product: true } } } },
-      paymentProofs: true,
+      paymentProof: true,
+      client: { select: { id: true, name: true, email: true, clientProfile: true } },
+      notification: true,
     },
     orderBy: { createdAt: 'desc' },
   })
@@ -284,9 +315,16 @@ export async function listOrders(status?: string) {
 export async function updateOrderStatus(orderId: string, status: string, reason?: string) {
   const order = await prisma.storeOrder.findUnique({
     where: { id: orderId },
-    include: { items: true },
+    include: {
+      items: { include: { variant: { include: { product: true } } } },
+      client: { select: { name: true, email: true } },
+      notification: true,
+    },
   })
   if (!order) throw new Error('Pedido no encontrado')
+
+  const rate = await getLatestExchangeRate()
+  const totalBs = (order.totalUsdCents * rate).toLocaleString('es-VE', { style: 'currency', currency: 'VES' })
 
   return prisma.$transaction(async (tx) => {
     if (status === 'CONFIRMED') {
@@ -312,6 +350,25 @@ export async function updateOrderStatus(orderId: string, status: string, reason?
           },
         })
       }
+
+      try {
+        await sendOrderConfirmationToClient(
+          order.client.email,
+          order.client.name,
+          order.orderNumber,
+          totalBs,
+          order.paymentMethod,
+          order.paymentReference
+        )
+        if (order.notification) {
+          await tx.storeNotification.update({
+            where: { id: order.notification.id },
+            data: { clientEmailSent: true, clientEmailSentAt: new Date() },
+          })
+        }
+      } catch (e) {
+        console.error('Failed to send confirmation email:', e)
+      }
     }
 
     if (status === 'REJECTED' || status === 'CANCELLED') {
@@ -320,17 +377,75 @@ export async function updateOrderStatus(orderId: string, status: string, reason?
           where: { id: item.variantId },
           data: { reservedStock: { decrement: item.quantity } },
         })
+        await tx.stockMovement.create({
+          data: {
+            variantId: item.variantId,
+            type: 'ECOMMERCE_CANCEL',
+            quantity: item.quantity,
+            previousStock: (await tx.productVariant.findUnique({ where: { id: item.variantId } }))!.stock,
+            newStock: (await tx.productVariant.findUnique({ where: { id: item.variantId } }))!.stock,
+            reason: `Rechazo orden ${order.orderNumber}`,
+          },
+        })
       }
     }
 
     return tx.storeOrder.update({
       where: { id: orderId },
-      data: { status: status as any },
+      data: { status: status as any, notes: reason ? `${order.notes || ''}\nRazón: ${reason}`.trim() : order.notes },
       include: {
         items: { include: { variant: { include: { product: true } } } },
-        paymentProofs: true,
+        paymentProof: true,
+        client: { select: { id: true, name: true, email: true, clientProfile: true } },
+        notification: true,
       },
     })
+  })
+}
+
+export async function uploadPaymentProof(orderId: string, clientId: string, data: {
+  method: string
+  reference: string
+  declaredAmount: number
+  currency: string
+  proofFileUrl?: string
+}) {
+  const order = await prisma.storeOrder.findFirst({
+    where: { id: orderId, clientId },
+  })
+  if (!order) throw new Error('Pedido no encontrado')
+  if (order.status !== 'PENDING_PAYMENT') throw new Error('No se puede subir comprobante')
+
+  return prisma.$transaction(async (tx) => {
+    const proof = await tx.paymentProof.upsert({
+      where: { orderId },
+      create: {
+        orderId,
+        method: data.method as any,
+        reference: data.reference,
+        declaredAmount: data.declaredAmount,
+        currency: data.currency,
+        proofFileUrl: data.proofFileUrl,
+      },
+      update: {
+        method: data.method as any,
+        reference: data.reference,
+        declaredAmount: data.declaredAmount,
+        currency: data.currency,
+        proofFileUrl: data.proofFileUrl,
+      },
+    })
+
+    await tx.storeOrder.update({
+      where: { id: orderId },
+      data: {
+        status: 'PAYMENT_DECLARED',
+        paymentReference: data.reference,
+        paymentDate: new Date(),
+      },
+    })
+
+    return proof
   })
 }
 
@@ -338,16 +453,23 @@ export async function updateExchangeRate(rate: number) {
   return prisma.exchangeRate.create({ data: { rate } })
 }
 
-export async function getNotifications(unreadOnly = false) {
+export async function getStoreNotifications(unreadOnly = false) {
   const where: any = {}
-  if (unreadOnly) where.read = false
-  return prisma.notification.findMany({
+  if (unreadOnly) where.adminEmailSent = false
+
+  const notifications = await prisma.storeNotification.findMany({
     where,
+    include: {
+      order: {
+        include: {
+          client: { select: { name: true, email: true } },
+          items: { include: { variant: { include: { product: true } } } },
+        },
+      },
+    },
     orderBy: { createdAt: 'desc' },
     take: 50,
   })
-}
 
-export async function markNotificationRead(id: string) {
-  return prisma.notification.update({ where: { id }, data: { read: true } })
+  return notifications
 }
