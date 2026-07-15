@@ -120,10 +120,10 @@ export default function Sidebar() {
                 to={item.path}
                 onClick={close}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  `relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                      ? 'bg-primary-50 text-primary-700 dark:bg-white/10 dark:text-white dark:before:absolute dark:before:left-0 dark:before:top-1/2 dark:before:-translate-y-1/2 dark:before:h-5 dark:before:w-1 dark:before:rounded-full dark:before:bg-white'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white'
                   }`
                 }
               >
@@ -137,7 +137,7 @@ export default function Sidebar() {
         <div className="p-3 border-t border-gray-200 dark:border-gray-800">
           <button
             onClick={toggle}
-            className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 transition-colors"
+            className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white transition-colors"
             aria-label={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
           >
             {dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}

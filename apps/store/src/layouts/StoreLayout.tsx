@@ -19,32 +19,32 @@ export default function StoreLayout() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
-      <header className="sticky top-0 z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <header className="sticky top-0 z-40 border-b border-gray-800 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/tienda" className="flex items-center gap-2">
-              <img src={dark ? '/om.png' : '/omnegro.png'} alt="OmStore" className="h-8" />
-              <span className="font-bold text-xl text-gray-900 dark:text-white">OmStore</span>
+              <img src="/om.png" alt="OmStore" className="h-12" />
+              <span className="font-bold text-xl text-white">OmStore</span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">
-              <Link to="/tienda" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+              <Link to="/tienda" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 Tienda
               </Link>
               <button
                 onClick={openDrawer}
-                className="relative p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="relative p-2 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
               >
                 <ShoppingCart size={20} />
                 {itemCount() > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-white text-black text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
                     {itemCount() > 99 ? '99+' : itemCount()}
                   </span>
                 )}
               </button>
               <button
                 onClick={toggle}
-                className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="p-2 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
                 aria-label="Cambiar tema"
               >
                 {dark ? <Sun size={18} /> : <Moon size={18} />}
@@ -54,7 +54,7 @@ export default function StoreLayout() {
                 <div className="relative">
                   <button
                     onClick={() => setMenuOpen(!menuOpen)}
-                    className="flex items-center gap-2 p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    className="flex items-center gap-2 p-2 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
                   >
                     <User size={18} />
                     <span className="text-sm font-medium hidden sm:block">{user.name}</span>
@@ -88,13 +88,13 @@ export default function StoreLayout() {
                 <div className="flex items-center gap-2">
                   <Link
                     to="/tienda/login"
-                    className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
                   >
                     Iniciar sesión
                   </Link>
                   <Link
                     to="/tienda/registro"
-                    className="px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                    className="px-4 py-2 text-sm font-medium bg-white text-black rounded-lg hover:bg-gray-200 transition-colors"
                   >
                     Registrarse
                   </Link>
@@ -105,18 +105,18 @@ export default function StoreLayout() {
             <div className="flex md:hidden items-center gap-2">
               <button
                 onClick={openDrawer}
-                className="relative p-2 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="relative p-2 text-gray-300 hover:text-white rounded-lg hover:bg-white/10"
               >
                 <ShoppingCart size={20} />
                 {itemCount() > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-white text-black text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
                     {itemCount()}
                   </span>
                 )}
               </button>
               <Link
                 to="/tienda/login"
-                className="p-2 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="p-2 text-gray-300 hover:text-white rounded-lg hover:bg-white/10"
               >
                 <User size={20} />
               </Link>

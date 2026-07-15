@@ -6,20 +6,19 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Seeding users only...')
 
-  const passwordHash = await bcrypt.hash('admin123', 10)
-
   const users = [
-    { name: 'Admin Principal', email: 'admin@omstore.com', role: UserRole.ADMIN },
-    { name: 'Gerente Tienda', email: 'manager@omstore.com', role: UserRole.MANAGER },
-    { name: 'Cajero Demo', email: 'cajero@omstore.com', role: UserRole.CASHIER },
-    { name: 'Vendedor Demo', email: 'vendedor@omstore.com', role: UserRole.SELLER },
+    { name: 'Admin Principal', email: 'admin', role: UserRole.ADMIN, password: '123456' },
+    { name: 'Gerente Tienda', email: 'manager@omstore.com', role: UserRole.MANAGER, password: 'admin123' },
+    { name: 'Cajero Demo', email: 'cajero@omstore.com', role: UserRole.CASHIER, password: 'admin123' },
+    { name: 'Vendedor Demo', email: 'vendedor@omstore.com', role: UserRole.SELLER, password: 'admin123' },
   ]
 
   for (const u of users) {
+    const passwordHash = await bcrypt.hash(u.password, 10)
     await prisma.user.upsert({
       where: { email: u.email },
-      update: {},
-      create: { ...u, passwordHash },
+      update: { passwordHash },
+      create: { name: u.name, email: u.email, role: u.role, passwordHash },
     })
   }
 
@@ -34,7 +33,7 @@ async function main() {
   }
   console.log('Expense categories created')
 
-  console.log('Users created: admin@omstore.com / admin123 (all users)')
+  console.log('Users created: admin / 123456 (ADMIN) — manager|cajero|vendedor@omstore.com / admin123')
 
   // Exchange rate
   const existingRate = await prisma.exchangeRate.findFirst()

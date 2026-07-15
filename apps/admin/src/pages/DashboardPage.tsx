@@ -149,7 +149,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {statCards.map((card) => (
@@ -170,7 +170,7 @@ export default function DashboardPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-900 dark:border-gray-800">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Productos más vendidos</h2>
           {topProducts.length === 0 ? (
-            <p className="text-gray-500 text-sm">Sin datos</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Sin datos</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -200,7 +200,7 @@ export default function DashboardPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-900 dark:border-gray-800">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Bajo stock</h2>
           {lowStock.length === 0 ? (
-            <p className="text-gray-500 text-sm">Sin productos con bajo stock</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Sin productos con bajo stock</p>
           ) : (
             <div className="space-y-3">
               {lowStock.map((item) => (
@@ -234,7 +234,7 @@ export default function DashboardPage() {
             </Link>
           </div>
           {recentActivity.length === 0 ? (
-            <p className="text-gray-500 text-sm">Sin ventas recientes</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Sin ventas recientes</p>
           ) : (
             <div className="space-y-3">
               {recentActivity.map((sale) => (
@@ -265,7 +265,7 @@ export default function DashboardPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-900 dark:border-gray-800">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Métodos de pago</h2>
           {paymentMethods.length === 0 ? (
-            <p className="text-gray-500 text-sm">Sin datos</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Sin datos</p>
           ) : (
             <div className="space-y-4">
               {paymentMethods.map((pm) => {

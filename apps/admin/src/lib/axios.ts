@@ -16,7 +16,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const url: string = error.config?.url || ''
+    const isLoginCall = url.includes('/auth/login')
+    // Solo redirigimos si expira una sesión existente, no en fallos del propio login.
+    // Así el error de credenciales llega al catch y se muestra en pantalla.
+    if (error.response?.status === 401 && !isLoginCall) {
       localStorage.removeItem('token')
       window.location.href = '/login'
     }

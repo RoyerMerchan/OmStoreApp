@@ -250,7 +250,7 @@ export async function createOrder(input: any, clientId: string) {
       clientEmail: order.client.email,
       total: totalBs,
       paymentMethod: order.paymentMethod,
-      paymentReference: order.paymentReference,
+      paymentReference: order.paymentReference ?? undefined,
       items: itemsFormatted,
     })
     await prisma.storeNotification.update({
@@ -358,7 +358,7 @@ export async function updateOrderStatus(orderId: string, status: string, reason?
           order.orderNumber,
           totalBs,
           order.paymentMethod,
-          order.paymentReference
+          order.paymentReference ?? undefined
         )
         if (order.notification) {
           await tx.storeNotification.update({

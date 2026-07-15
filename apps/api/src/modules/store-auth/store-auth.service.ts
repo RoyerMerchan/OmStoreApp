@@ -69,7 +69,6 @@ export class StoreAuthService {
   async me(userId: string) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: { clientProfile: true },
       select: {
         id: true,
         name: true,
@@ -101,7 +100,6 @@ export class StoreAuthService {
           },
         },
       },
-      include: { clientProfile: true },
       select: {
         id: true,
         name: true,
